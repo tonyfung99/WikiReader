@@ -1,0 +1,181 @@
+import Foundation
+
+/// Minimal, dependency-free block parser. Handles the markdown that clipped
+/// notes actually contain: frontmatter, headings, paragraphs, lists, fenced
+/// code, blockquotes, and horizontal rules. Inline spans are left to
+/// `MarkdownInline`.
+nonisolated enum MarkdownParser {
+    static func parse(_ content: String) -> [MarkdownBlock] {
+        var lines = content.components(separatedBy: "\n")
+        var blocks: [MarkdownBlock] = []
+
+        if let (frontmatter, rest) = extractFrontmatter(lines) {
+            blocks.append(MarkdownBlock(kind: .frontmatter(lines: frontmatter)))
+            lines = rest
+        }
+
+        var index = 0
+        while index < lines.count {
+            let line = lines[index]
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+
+            if trimmed.isEmpty {
+                index += 1
+                continue
+            }
+
+            if trimmed.hasPrefix("```") {
+                let (block, next) = parseCodeFence(lines, start: index)
+                blocks.append(block)
+                index = next
+            } else if let heading = parseHeading(trimmed) {
+                blocks.append(heading)
+                index += 1
+            } else if isHorizontalRule(trimmed) {
+                blocks.append(MarkdownBlock(kind: .rule))
+                index += 1
+            } else if trimmed.hasPrefix(">") {
+                let (block, next) = parseQuote(lines, start: index)
+                blocks.append(block)
+                index = next
+            } else if isBullet(trimmed) {
+                let (block, next) = parseList(lines, start: index, ordered: false)
+                blocks.append(block)
+                index = next
+            } else if isOrdered(trimmed) {
+                let (block, next) = parseList(lines, start: index, ordered: true)
+                blocks.append(block)
+                index = next
+            } else {
+                let (block, next) = parseParagraph(lines, start: index)
+                blocks.append(block)
+                index = next
+            }
+        }
+
+        return blocks
+    }
+
+    // MARK: - Frontmatter
+
+    private static func extractFrontmatter(_ lines: [String]) -> (lines: [String], rest: [String])? {
+        guard lines.first?.trimmingCharacters(in: .whitespaces) == "---" else { return nil }
+        guard let closing = lines.dropFirst().firstIndex(where: {
+            $0.trimmingCharacters(in: .whitespaces) == "---"
+        }) else { return nil }
+        let body = Array(lines[1..<closing])
+        let rest = Array(lines[(closing + 1)...])
+        return (body, rest)
+    }
+
+    // MARK: - Block parsers
+
+    private static func parseHeading(_ trimmed: String) -> MarkdownBlock? {
+        var level = 0
+        for char in trimmed {
+            if char == "#" { level += 1 } else { break }
+        }
+        guard (1...6).contains(level) else { return nil }
+        let afterHashes = trimmed.dropFirst(level)
+        guard afterHashes.first == " " || afterHashes.isEmpty else { return nil }
+        let text = afterHashes.trimmingCharacters(in: .whitespaces)
+        return MarkdownBlock(kind: .heading(level: level, text: text))
+    }
+
+    private static func isHorizontalRule(_ trimmed: String) -> Bool {
+        let stripped = trimmed.replacingOccurrences(of: " ", with: "")
+        guard stripped.count >= 3 else { return false }
+        return stripped.allSatisfy { $0 == "-" }
+            || stripped.allSatisfy { $0 == "*" }
+            || stripped.allSatisfy { $0 == "_" }
+    }
+
+    private static func parseCodeFence(_ lines: [String], start: Int) -> (MarkdownBlock, Int) {
+        let fence = lines[start].trimmingCharacters(in: .whitespaces)
+        let language = String(fence.dropFirst(3)).trimmingCharacters(in: .whitespaces)
+        var body: [String] = []
+        var index = start + 1
+        while index < lines.count {
+            if lines[index].trimmingCharacters(in: .whitespaces).hasPrefix("```") {
+                index += 1
+                break
+            }
+            body.append(lines[index])
+            index += 1
+        }
+        let block = MarkdownBlock(kind: .code(
+            language: language.isEmpty ? nil : language,
+            code: body.joined(separator: "\n")
+        ))
+        return (block, index)
+    }
+
+    private static func parseQuote(_ lines: [String], start: Int) -> (MarkdownBlock, Int) {
+        var quoted: [String] = []
+        var index = start
+        while index < lines.count, lines[index].trimmingCharacters(in: .whitespaces).hasPrefix(">") {
+            var line = lines[index].trimmingCharacters(in: .whitespaces)
+            line.removeFirst()
+            quoted.append(line.hasPrefix(" ") ? String(line.dropFirst()) : line)
+            index += 1
+        }
+        return (MarkdownBlock(kind: .quote(lines: quoted)), index)
+    }
+
+    private static func parseList(_ lines: [String], start: Int, ordered: Bool) -> (MarkdownBlock, Int) {
+        var items: [String] = []
+        var index = start
+        while index < lines.count {
+            let trimmed = lines[index].trimmingCharacters(in: .whitespaces)
+            let matches = ordered ? isOrdered(trimmed) : isBullet(trimmed)
+            guard matches else { break }
+            items.append(listItemText(trimmed, ordered: ordered))
+            index += 1
+        }
+        let kind: MarkdownBlock.Kind = ordered ? .numberedList(items: items) : .bulletList(items: items)
+        return (MarkdownBlock(kind: kind), index)
+    }
+
+    private static func parseParagraph(_ lines: [String], start: Int) -> (MarkdownBlock, Int) {
+        var collected: [String] = []
+        var index = start
+        while index < lines.count {
+            let trimmed = lines[index].trimmingCharacters(in: .whitespaces)
+            if trimmed.isEmpty
+                || trimmed.hasPrefix("#")
+                || trimmed.hasPrefix(">")
+                || trimmed.hasPrefix("```")
+                || isBullet(trimmed)
+                || isOrdered(trimmed)
+                || isHorizontalRule(trimmed) {
+                break
+            }
+            collected.append(trimmed)
+            index += 1
+        }
+        return (MarkdownBlock(kind: .paragraph(text: collected.joined(separator: " "))), index)
+    }
+
+    // MARK: - List helpers
+
+    private static func isBullet(_ trimmed: String) -> Bool {
+        guard let first = trimmed.first, "-*+".contains(first) else { return false }
+        let rest = trimmed.dropFirst()
+        return rest.first == " "
+    }
+
+    private static func isOrdered(_ trimmed: String) -> Bool {
+        let digits = trimmed.prefix { $0.isNumber }
+        guard !digits.isEmpty else { return false }
+        let after = trimmed.dropFirst(digits.count)
+        return after.first == "." && after.dropFirst().first == " "
+    }
+
+    private static func listItemText(_ trimmed: String, ordered: Bool) -> String {
+        if ordered {
+            let digits = trimmed.prefix { $0.isNumber }
+            return trimmed.dropFirst(digits.count + 1).trimmingCharacters(in: .whitespaces)
+        }
+        return trimmed.dropFirst(1).trimmingCharacters(in: .whitespaces)
+    }
+}
