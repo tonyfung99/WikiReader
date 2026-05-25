@@ -46,6 +46,10 @@ nonisolated enum MarkdownParser {
                 let (block, next) = parseList(lines, start: index, ordered: true)
                 blocks.append(block)
                 index = next
+            } else if isTableStart(lines, index) {
+                let (block, next) = parseTable(lines, start: index)
+                blocks.append(block)
+                index = next
             } else {
                 let (block, next) = parseParagraph(lines, start: index)
                 blocks.append(block)
@@ -147,7 +151,8 @@ nonisolated enum MarkdownParser {
                 || trimmed.hasPrefix("```")
                 || isBullet(trimmed)
                 || isOrdered(trimmed)
-                || isHorizontalRule(trimmed) {
+                || isHorizontalRule(trimmed)
+                || isTableStart(lines, index) {
                 break
             }
             collected.append(trimmed)
@@ -177,5 +182,65 @@ nonisolated enum MarkdownParser {
             return trimmed.dropFirst(digits.count + 1).trimmingCharacters(in: .whitespaces)
         }
         return trimmed.dropFirst(1).trimmingCharacters(in: .whitespaces)
+    }
+
+    // MARK: - Tables
+
+    /// A table is a header row containing a pipe, immediately followed by a
+    /// delimiter row like `| --- | :--: |`.
+    private static func isTableStart(_ lines: [String], _ index: Int) -> Bool {
+        guard index + 1 < lines.count else { return false }
+        guard lines[index].contains("|") else { return false }
+        return isDelimiterRow(lines[index + 1])
+    }
+
+    private static func isDelimiterRow(_ line: String) -> Bool {
+        guard line.contains("-") else { return false }
+        let cells = splitRow(line)
+        guard !cells.isEmpty else { return false }
+        return cells.allSatisfy { cell in
+            !cell.isEmpty && cell.contains("-") && cell.allSatisfy { $0 == "-" || $0 == ":" }
+        }
+    }
+
+    private static func splitRow(_ line: String) -> [String] {
+        var s = line.trimmingCharacters(in: .whitespaces)
+        if s.hasPrefix("|") { s.removeFirst() }
+        if s.hasSuffix("|") { s.removeLast() }
+        return s.components(separatedBy: "|").map { $0.trimmingCharacters(in: .whitespaces) }
+    }
+
+    private static func parseTable(_ lines: [String], start: Int) -> (MarkdownBlock, Int) {
+        let headers = splitRow(lines[start])
+        let alignments = parseAlignments(lines[start + 1], count: headers.count)
+        var rows: [[String]] = []
+        var index = start + 2
+        while index < lines.count {
+            let trimmed = lines[index].trimmingCharacters(in: .whitespaces)
+            guard !trimmed.isEmpty, trimmed.contains("|") else { break }
+            var cells = splitRow(lines[index])
+            if cells.count < headers.count {
+                cells += Array(repeating: "", count: headers.count - cells.count)
+            } else if cells.count > headers.count {
+                cells = Array(cells.prefix(headers.count))
+            }
+            rows.append(cells)
+            index += 1
+        }
+        return (MarkdownBlock(kind: .table(headers: headers, alignments: alignments, rows: rows)), index)
+    }
+
+    private static func parseAlignments(_ line: String, count: Int) -> [ColumnAlignment] {
+        var result = splitRow(line).map { cell -> ColumnAlignment in
+            let left = cell.hasPrefix(":")
+            let right = cell.hasSuffix(":")
+            if left && right { return .center }
+            if right { return .trailing }
+            return .leading
+        }
+        if result.count < count {
+            result += Array(repeating: .leading, count: count - result.count)
+        }
+        return Array(result.prefix(count))
     }
 }

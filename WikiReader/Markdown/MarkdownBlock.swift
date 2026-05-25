@@ -14,6 +14,11 @@ nonisolated struct MarkdownBlock: Identifiable {
         case numberedList(items: [String])
         case code(language: String?, code: String)
         case quote(lines: [String])
+        case table(headers: [String], alignments: [ColumnAlignment], rows: [[String]])
         case rule
     }
+}
+
+nonisolated enum ColumnAlignment {
+    case leading, center, trailing
 }

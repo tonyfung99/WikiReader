@@ -70,6 +70,9 @@ struct MarkdownView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
 
+        case .table(let headers, let alignments, let rows):
+            MarkdownTableView(headers: headers, alignments: alignments, rows: rows)
+
         case .rule:
             Divider()
         }
@@ -81,6 +84,55 @@ struct MarkdownView: View {
         case 2: .title2
         case 3: .title3
         default: .headline
+        }
+    }
+}
+
+private struct MarkdownTableView: View {
+    let headers: [String]
+    let alignments: [ColumnAlignment]
+    let rows: [[String]]
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 8) {
+                GridRow {
+                    ForEach(headers.indices, id: \.self) { column in
+                        Text(MarkdownInline.attributed(headers[column]))
+                            .fontWeight(.semibold)
+                            .gridColumnAlignment(horizontalAlignment(column))
+                    }
+                }
+                Divider().gridCellColumns(max(headers.count, 1))
+                ForEach(rows.indices, id: \.self) { row in
+                    GridRow {
+                        ForEach(headers.indices, id: \.self) { column in
+                            Text(MarkdownInline.attributed(cell(row, column)))
+                        }
+                    }
+                    if row < rows.count - 1 {
+                        Divider().gridCellColumns(max(headers.count, 1)).opacity(0.4)
+                    }
+                }
+            }
+            .padding(12)
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.secondary.opacity(0.25))
+            )
+        }
+    }
+
+    private func cell(_ row: Int, _ column: Int) -> String {
+        column < rows[row].count ? rows[row][column] : ""
+    }
+
+    private func horizontalAlignment(_ column: Int) -> HorizontalAlignment {
+        let alignment = column < alignments.count ? alignments[column] : .leading
+        switch alignment {
+        case .leading: return .leading
+        case .center: return .center
+        case .trailing: return .trailing
         }
     }
 }
@@ -127,6 +179,11 @@ private struct FrontmatterView: View {
     2. step two
 
     > a block quote
+
+    | Feature | Status |
+    | --- | :---: |
+    | Tables | done |
+    | Graph view | done |
 
     ```
     let answer = 42
