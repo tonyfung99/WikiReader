@@ -16,11 +16,16 @@ struct FxTwitterClient {
         var request = URLRequest(url: url)
         request.setValue("WikiReader/1.0", forHTTPHeaderField: "User-Agent")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.timeoutInterval = 15  // share extension has a tight time budget
 
         let data: Data
         let response: URLResponse
         do {
             (data, response) = try await session.data(for: request)
+        } catch is CancellationError {
+            throw CancellationError()
+        } catch let error as URLError where error.code == .cancelled {
+            throw CancellationError()
         } catch {
             throw ClipError.network(error)
         }

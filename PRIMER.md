@@ -41,9 +41,9 @@ Two design constraints drive the shape:
    iCloud Drive folder is trivially accessible from any tool, agent, or
    script on the Mac.
 
-Each piece fails gracefully: extension retries on network error; iCloud
-queues if Mac is offline; llm_wiki picks up files when sync completes;
-Hermes works against whatever is locally materialized.
+Each piece fails gracefully: the extension reports a clear error on network
+failure; iCloud queues if Mac is offline; llm_wiki picks up files when sync
+completes; Hermes works against whatever is locally materialized.
 
 Cost of this choice: Obsidian iOS can't open vaults that live outside its
 own container, so it can't be the mobile viewer. WikiReader takes over

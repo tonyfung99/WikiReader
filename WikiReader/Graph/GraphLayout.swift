@@ -15,6 +15,11 @@ final class GraphLayout {
     var canvasSize: CGSize = .zero
     var draggingID: String?
 
+    /// True once motion is negligible, so the view can pause its animation
+    /// schedule instead of stepping the simulation every frame forever.
+    private(set) var isSettled = false
+    private var quietFrames = 0
+
     // Tuning constants.
     private let repulsion: Double = 9000
     private let springLength: Double = 70
@@ -41,6 +46,8 @@ final class GraphLayout {
             )
             velocities[node.id] = .zero
         }
+        quietFrames = 0
+        isSettled = false
     }
 
     func position(for id: String) -> CGPoint {
@@ -50,6 +57,8 @@ final class GraphLayout {
     func setDraggedPosition(_ point: CGPoint, for id: String) {
         positions[id] = point
         velocities[id] = .zero
+        quietFrames = 0
+        isSettled = false
     }
 
     func nearestNode(to point: CGPoint, within radius: Double) -> String? {
@@ -116,6 +125,7 @@ final class GraphLayout {
         }
 
         // Integrate.
+        var maxObservedSpeed = 0.0
         for node in nodes {
             let id = node.id
             if id == draggingID { continue }
@@ -138,6 +148,11 @@ final class GraphLayout {
 
             velocities[id] = velocity
             positions[id] = CGPoint(x: pos.x + velocity.dx * clampedDt, y: pos.y + velocity.dy * clampedDt)
+            maxObservedSpeed = max(maxObservedSpeed, hypot(velocity.dx, velocity.dy))
         }
+
+        // Settle (and let the view pause) once motion stays negligible.
+        quietFrames = maxObservedSpeed < 5 ? quietFrames + 1 : 0
+        isSettled = quietFrames >= 24
     }
 }

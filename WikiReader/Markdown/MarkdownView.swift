@@ -5,7 +5,7 @@ struct MarkdownView: View {
     let blocks: [MarkdownBlock]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        LazyVStack(alignment: .leading, spacing: 14) {
             ForEach(blocks) { block in
                 view(for: block.kind)
             }

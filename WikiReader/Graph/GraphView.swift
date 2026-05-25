@@ -52,7 +52,7 @@ struct ForceGraphView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            TimelineView(.animation) { timeline in
+            TimelineView(.animation(paused: layout.isSettled)) { timeline in
                 Canvas { context, size in
                     _ = timeline.date  // redraw each frame
                     draw(in: &context)
@@ -65,6 +65,15 @@ struct ForceGraphView: View {
             .gesture(dragGesture)
             .onAppear { layout.seedIfNeeded(in: geometry.size) }
             .onChange(of: geometry.size) { _, newSize in layout.seedIfNeeded(in: newSize) }
+            .accessibilityRepresentation {
+                List(layout.nodes) { node in
+                    if node.exists {
+                        Button(node.id) { onOpen(node) }
+                    } else {
+                        Text(node.id).foregroundStyle(.secondary)
+                    }
+                }
+            }
         }
     }
 
@@ -87,7 +96,13 @@ struct ForceGraphView: View {
             let point = layout.position(for: node.id)
             let radius: CGFloat = 7
             let rect = CGRect(x: point.x - radius, y: point.y - radius, width: radius * 2, height: radius * 2)
-            context.fill(Path(ellipseIn: rect), with: .color(node.exists ? .accentColor : .secondary))
+            // Existing notes are filled; phantom (un-created) notes are hollow —
+            // a shape cue so the distinction isn't color-only.
+            if node.exists {
+                context.fill(Path(ellipseIn: rect), with: .color(.accentColor))
+            } else {
+                context.stroke(Path(ellipseIn: rect), with: .color(.secondary), lineWidth: 2)
+            }
             context.draw(
                 Text(node.id).font(.caption2).foregroundColor(.primary),
                 at: CGPoint(x: point.x, y: point.y + radius + 6),
