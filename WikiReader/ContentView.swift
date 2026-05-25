@@ -84,3 +84,11 @@ private struct WelcomeView: View {
         }
     }
 }
+
+#Preview("Root") {
+    ContentView()
+}
+
+#Preview("Welcome") {
+    WelcomeView {}
+}

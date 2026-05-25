@@ -54,3 +54,25 @@ struct MarkdownFileView: View {
         isLoading = false
     }
 }
+
+#if DEBUG
+private func previewMarkdownFile() -> VaultFile {
+    let dir = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        .appendingPathComponent("wr-preview", isDirectory: true)
+    try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+    let url = dir.appendingPathComponent("Sample Note.md")
+    try? """
+    # Sample Note
+
+    Hello from a **preview** — no real vault needed, just a temp file. \
+    Here's an Obsidian [[Linked Note]] and a [web link](https://apple.com).
+    """.write(to: url, atomically: true, encoding: .utf8)
+    return VaultFile(url: url, isDirectory: false)
+}
+
+#Preview {
+    NavigationStack {
+        MarkdownFileView(file: previewMarkdownFile())
+    }
+}
+#endif

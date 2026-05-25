@@ -47,3 +47,21 @@ struct VaultBrowserView: View {
         didLoad = true
     }
 }
+
+#if DEBUG
+private func previewVaultDirectory() -> URL {
+    let root = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        .appendingPathComponent("wr-vault-preview", isDirectory: true)
+    let sub = root.appendingPathComponent("Topics", isDirectory: true)
+    try? FileManager.default.createDirectory(at: sub, withIntermediateDirectories: true)
+    try? "# Note A".write(to: root.appendingPathComponent("Note A.md"), atomically: true, encoding: .utf8)
+    try? "# Note B".write(to: root.appendingPathComponent("Note B.md"), atomically: true, encoding: .utf8)
+    return root
+}
+
+#Preview {
+    NavigationStack {
+        VaultBrowserView(directory: previewVaultDirectory(), title: "Vault")
+    }
+}
+#endif

@@ -106,3 +106,34 @@ private struct FrontmatterView: View {
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 }
+
+#Preview {
+    let sample = """
+    ---
+    title: "Sample Note"
+    type: tweet
+    ---
+    # Heading One
+
+    Body text with **bold**, *italic*, `inline code`, a [link](https://apple.com) \
+    and an Obsidian [[Wiki Link]].
+
+    ## A list
+
+    - first item
+    - second item
+
+    1. step one
+    2. step two
+
+    > a block quote
+
+    ```
+    let answer = 42
+    ```
+    """
+    ScrollView {
+        MarkdownView(blocks: MarkdownParser.parse(sample))
+            .padding()
+    }
+}

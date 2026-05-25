@@ -44,8 +44,18 @@ struct ShareRootView: View {
     @State var model: ShareModel
 
     var body: some View {
+        ShareStatusView(phase: model.phase) { model.onDone?() }
+            .task { await model.run() }
+    }
+}
+
+struct ShareStatusView: View {
+    let phase: ShareModel.Phase
+    var onDone: () -> Void
+
+    var body: some View {
         VStack(spacing: 16) {
-            switch model.phase {
+            switch phase {
             case .loading:
                 ProgressView("Clipping…")
             case .success(let title):
@@ -70,12 +80,15 @@ struct ShareRootView: View {
                     .multilineTextAlignment(.center)
             }
 
-            if model.phase.isFinished {
-                Button("Done") { model.onDone?() }
+            if phase.isFinished {
+                Button("Done", action: onDone)
                     .buttonStyle(.borderedProminent)
             }
         }
         .padding(28)
-        .task { await model.run() }
     }
 }
+
+#Preview("Loading") { ShareStatusView(phase: .loading, onDone: {}) }
+#Preview("Success") { ShareStatusView(phase: .success(title: "jack: just setting up my twttr"), onDone: {}) }
+#Preview("Failure") { ShareStatusView(phase: .failure(message: "No URL was shared."), onDone: {}) }

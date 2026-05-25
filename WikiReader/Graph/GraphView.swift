@@ -116,3 +116,16 @@ struct ForceGraphView: View {
             }
     }
 }
+
+#Preview {
+    let names = ["Index", "Swift", "iOS", "Graph", "Vault"]
+    let nodes = names.map { GraphNode(id: $0, url: URL(string: "file:///\($0)")) }
+    let edges = [
+        GraphEdge(source: "Index", target: "Swift"),
+        GraphEdge(source: "Index", target: "iOS"),
+        GraphEdge(source: "Swift", target: "iOS"),
+        GraphEdge(source: "Index", target: "Graph"),
+        GraphEdge(source: "Graph", target: "Vault"),
+    ]
+    return ForceGraphView(graph: VaultGraph(nodes: nodes, edges: edges)) { _ in }
+}
