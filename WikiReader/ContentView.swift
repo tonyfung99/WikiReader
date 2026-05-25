@@ -11,6 +11,7 @@ struct ContentView: View {
     @State private var store = VaultStore()
     @State private var rootURL: URL?
     @State private var showPicker = false
+    @State private var showError = false
 
     var body: some View {
         Group {
@@ -31,14 +32,11 @@ struct ContentView: View {
             }
             .ignoresSafeArea()
         }
-        .alert(
-            "Vault Error",
-            isPresented: Binding(
-                get: { store.errorMessage != nil },
-                set: { if !$0 { store.errorMessage = nil } }
-            )
-        ) {
-            Button("OK", role: .cancel) {}
+        .onChange(of: store.errorMessage) { _, newValue in
+            showError = (newValue != nil)
+        }
+        .alert("Vault Error", isPresented: $showError) {
+            Button("OK", role: .cancel) { store.errorMessage = nil }
         } message: {
             Text(store.errorMessage ?? "")
         }

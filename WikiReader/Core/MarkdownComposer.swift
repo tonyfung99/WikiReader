@@ -33,10 +33,11 @@ struct MarkdownComposer {
     // MARK: - Frontmatter
 
     static func frontmatter(tweet: TweetContent, title: String) -> String {
+        let iso = ISO8601DateFormatter()
         let author = tweet.authorName.isEmpty
             ? "@\(tweet.authorHandle)"
             : "\(tweet.authorName) (@\(tweet.authorHandle))"
-        let captured = ISO8601DateFormatter().string(from: Date())
+        let captured = iso.string(from: Date())
 
         var lines = ["---"]
         lines.append("title: \(yaml(title))")
@@ -44,7 +45,7 @@ struct MarkdownComposer {
         lines.append("author: \(yaml(author))")
         lines.append("captured_at: \(yaml(captured))")
         if let created = tweet.createdAt {
-            lines.append("posted_at: \(yaml(ISO8601DateFormatter().string(from: created)))")
+            lines.append("posted_at: \(yaml(iso.string(from: created)))")
         }
         lines.append("type: tweet")
         lines.append("tags: [clipped, tweet]")
