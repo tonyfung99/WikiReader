@@ -16,6 +16,7 @@ struct ContentView: View {
         Group {
             if let root = rootURL {
                 MainTabs(root: root, store: store) { showPicker = true }
+                    .id(root)
             } else if store.hasVault {
                 ProgressView("Opening vault…")
                     .task { rootURL = store.beginBrowsing() }
