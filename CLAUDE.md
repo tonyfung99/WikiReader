@@ -49,12 +49,17 @@ Per `axiom-swiftui` architecture guidance, this app uses Apple's native pattern
 xcodebuild -project WikiReader.xcodeproj -scheme WikiReader \
   -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
   -configuration Debug build
+
+# Run the unit tests (Swift Testing, covers Core logic)
+xcodebuild test -project WikiReader.xcodeproj -scheme WikiReader \
+  -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
 ```
 
-- Because `Core/` is `nonisolated` and Foundation-only, you can unit-check its
-  logic fast with plain `swiftc` (copy the needed `Core/*.swift` + a small
-  `main.swift` with assertions) without a test target.
-- The Xcode project (incl. the extension target) is managed; if you must edit
+- Tests live in `WikiReaderTests/` (a hosted unit-test target, `@testable
+  import WikiReader`, **Swift Testing** — not XCTest). Add new Core logic with a
+  test, per `axiom-testing`/TDD. Don't bother unit-testing SwiftUI views or the
+  non-deterministic `GraphLayout` force simulation.
+- The Xcode project (extension + test targets) is managed; if you must edit
   `project.pbxproj`, use the `xcodeproj` Ruby gem rather than hand-editing.
 
 ## Notes
