@@ -6,19 +6,86 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		08FD2A416CAADEDA6D30FE17 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2A76DFA10A474203E9BC399 /* Foundation.framework */; };
+		0F019CEE2B39B08715203EFE /* Filename.swift in Sources */ = {isa = PBXBuildFile; fileRef = 248679148E6BBB773E4057CB /* Filename.swift */; };
+		25418949B75727F5BE8B4E37 /* ClipService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC6FAEE2CC28DF727CC6A242 /* ClipService.swift */; };
+		40169D5E79E4AC74CC563696 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3017206B0DFAFA5978F088 /* AppGroup.swift */; };
+		5D74D83AEF3F2B76DA164D1B /* FxTwitterClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ECC9D413C9D8B20CB8D04B5 /* FxTwitterClient.swift */; };
+		77115EE87CB7F0B9A8115541 /* VaultAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A8DC4658E18C334F54E71B /* VaultAccess.swift */; };
+		87C1370CBAC0412A0996531A /* URLClassifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D1871AB6E35F67D7512CF0E /* URLClassifier.swift */; };
+		9B3955573558043273CB1AEB /* WikiReaderExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 4AA1FE28E97816250DFE1820 /* WikiReaderExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A1680C652B98EA4ED072F969 /* VaultBookmarkStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F13FF39EC69202BEA4356C /* VaultBookmarkStore.swift */; };
+		BE2A119E258DA1C90A5EE19D /* VaultWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93EFBE64F2383BE625945E9 /* VaultWriter.swift */; };
+		CB4DC697AC7842B5A2A686D3 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5FE4352D9AD025771D3E7F5 /* ShareViewController.swift */; };
+		D137E0AB455B0CA0DE7B4E8C /* ClipError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C256EE1FC2F31DB64E2EEB /* ClipError.swift */; };
+		DCE608FDA9830C8C8D875F50 /* MarkdownComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 775CF6F499303F68EA2C7354 /* MarkdownComposer.swift */; };
+		DDE788141F39CE29CAE00ACC /* TweetContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9894A7D905054F62B2C97A6F /* TweetContent.swift */; };
+		F56B6C98FAE560067D6C4F41 /* ShareFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BC1910D47ED781DA341B3D3 /* ShareFlow.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		43D6DD709C8F6C7BFBD2C907 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E152E22D2FC2F9C10044EE7E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0FD0249A4F99E73DF6341BC;
+			remoteInfo = WikiReaderExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E080DD1EBBDD71E74F5C5A39 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				9B3955573558043273CB1AEB /* WikiReaderExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		248679148E6BBB773E4057CB /* Filename.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Filename.swift; sourceTree = "<group>"; };
+		46C256EE1FC2F31DB64E2EEB /* ClipError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ClipError.swift; sourceTree = "<group>"; };
+		4AA1FE28E97816250DFE1820 /* WikiReaderExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WikiReaderExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		52F13FF39EC69202BEA4356C /* VaultBookmarkStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VaultBookmarkStore.swift; sourceTree = "<group>"; };
+		5ECC9D413C9D8B20CB8D04B5 /* FxTwitterClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FxTwitterClient.swift; sourceTree = "<group>"; };
+		6BC1910D47ED781DA341B3D3 /* ShareFlow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ShareFlow.swift; sourceTree = "<group>"; };
+		775CF6F499303F68EA2C7354 /* MarkdownComposer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MarkdownComposer.swift; sourceTree = "<group>"; };
+		8D1871AB6E35F67D7512CF0E /* URLClassifier.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = URLClassifier.swift; sourceTree = "<group>"; };
+		9894A7D905054F62B2C97A6F /* TweetContent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TweetContent.swift; sourceTree = "<group>"; };
+		A93EFBE64F2383BE625945E9 /* VaultWriter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VaultWriter.swift; sourceTree = "<group>"; };
+		D0A8DC4658E18C334F54E71B /* VaultAccess.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VaultAccess.swift; sourceTree = "<group>"; };
+		D2A76DFA10A474203E9BC399 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		D5FE4352D9AD025771D3E7F5 /* ShareViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		E152E2352FC2F9C10044EE7E /* WikiReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WikiReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EE3017206B0DFAFA5978F088 /* AppGroup.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppGroup.swift; sourceTree = "<group>"; };
+		FC6FAEE2CC28DF727CC6A242 /* ClipService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ClipService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E152E2372FC2F9C10044EE7E /* WikiReader */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = WikiReader;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		B5FF9D63D6087C1EF9498B49 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				08FD2A416CAADEDA6D30FE17 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E152E2322FC2F9C10044EE7E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -29,11 +96,49 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		321394D3C74C2407D97B5791 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4A12ABFFC5C85575CCAA51A6 /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4A12ABFFC5C85575CCAA51A6 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				D2A76DFA10A474203E9BC399 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		BBD72EBDA160FBD53ADF710D /* SharedCore */ = {
+			isa = PBXGroup;
+			children = (
+				EE3017206B0DFAFA5978F088 /* AppGroup.swift */,
+				46C256EE1FC2F31DB64E2EEB /* ClipError.swift */,
+				FC6FAEE2CC28DF727CC6A242 /* ClipService.swift */,
+				248679148E6BBB773E4057CB /* Filename.swift */,
+				5ECC9D413C9D8B20CB8D04B5 /* FxTwitterClient.swift */,
+				775CF6F499303F68EA2C7354 /* MarkdownComposer.swift */,
+				9894A7D905054F62B2C97A6F /* TweetContent.swift */,
+				8D1871AB6E35F67D7512CF0E /* URLClassifier.swift */,
+				D0A8DC4658E18C334F54E71B /* VaultAccess.swift */,
+				52F13FF39EC69202BEA4356C /* VaultBookmarkStore.swift */,
+				A93EFBE64F2383BE625945E9 /* VaultWriter.swift */,
+			);
+			name = SharedCore;
+			path = WikiReader/Core;
+			sourceTree = "<group>";
+		};
 		E152E22C2FC2F9C10044EE7E = {
 			isa = PBXGroup;
 			children = (
 				E152E2372FC2F9C10044EE7E /* WikiReader */,
 				E152E2362FC2F9C10044EE7E /* Products */,
+				321394D3C74C2407D97B5791 /* Frameworks */,
+				EFEAA2B7A0AD3EFDAF944C23 /* WikiReaderExtension */,
+				BBD72EBDA160FBD53ADF710D /* SharedCore */,
 			);
 			sourceTree = "<group>";
 		};
@@ -41,13 +146,41 @@
 			isa = PBXGroup;
 			children = (
 				E152E2352FC2F9C10044EE7E /* WikiReader.app */,
+				4AA1FE28E97816250DFE1820 /* WikiReaderExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		EFEAA2B7A0AD3EFDAF944C23 /* WikiReaderExtension */ = {
+			isa = PBXGroup;
+			children = (
+				D5FE4352D9AD025771D3E7F5 /* ShareViewController.swift */,
+				6BC1910D47ED781DA341B3D3 /* ShareFlow.swift */,
+			);
+			name = WikiReaderExtension;
+			path = WikiReaderExtension;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		D0FD0249A4F99E73DF6341BC /* WikiReaderExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DBB9544443E3F7D07D1BFC27 /* Build configuration list for PBXNativeTarget "WikiReaderExtension" */;
+			buildPhases = (
+				B2EE6D43B58D20FA9B7D2A1B /* Sources */,
+				B5FF9D63D6087C1EF9498B49 /* Frameworks */,
+				6E33E5ED3C6B9FCDD1CBFA5A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WikiReaderExtension;
+			productName = WikiReaderExtension;
+			productReference = 4AA1FE28E97816250DFE1820 /* WikiReaderExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		E152E2342FC2F9C10044EE7E /* WikiReader */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E152E2402FC2F9C30044EE7E /* Build configuration list for PBXNativeTarget "WikiReader" */;
@@ -55,17 +188,17 @@
 				E152E2312FC2F9C10044EE7E /* Sources */,
 				E152E2322FC2F9C10044EE7E /* Frameworks */,
 				E152E2332FC2F9C10044EE7E /* Resources */,
+				E080DD1EBBDD71E74F5C5A39 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				287D602E4F06D53C5409FEB9 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				E152E2372FC2F9C10044EE7E /* WikiReader */,
 			);
 			name = WikiReader;
-			packageProductDependencies = (
-			);
 			productName = WikiReader;
 			productReference = E152E2352FC2F9C10044EE7E /* WikiReader.app */;
 			productType = "com.apple.product-type.application";
@@ -100,11 +233,19 @@
 			projectRoot = "";
 			targets = (
 				E152E2342FC2F9C10044EE7E /* WikiReader */,
+				D0FD0249A4F99E73DF6341BC /* WikiReaderExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		6E33E5ED3C6B9FCDD1CBFA5A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E152E2332FC2F9C10044EE7E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -115,6 +256,26 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		B2EE6D43B58D20FA9B7D2A1B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB4DC697AC7842B5A2A686D3 /* ShareViewController.swift in Sources */,
+				F56B6C98FAE560067D6C4F41 /* ShareFlow.swift in Sources */,
+				40169D5E79E4AC74CC563696 /* AppGroup.swift in Sources */,
+				D137E0AB455B0CA0DE7B4E8C /* ClipError.swift in Sources */,
+				25418949B75727F5BE8B4E37 /* ClipService.swift in Sources */,
+				0F019CEE2B39B08715203EFE /* Filename.swift in Sources */,
+				5D74D83AEF3F2B76DA164D1B /* FxTwitterClient.swift in Sources */,
+				DCE608FDA9830C8C8D875F50 /* MarkdownComposer.swift in Sources */,
+				DDE788141F39CE29CAE00ACC /* TweetContent.swift in Sources */,
+				87C1370CBAC0412A0996531A /* URLClassifier.swift in Sources */,
+				77115EE87CB7F0B9A8115541 /* VaultAccess.swift in Sources */,
+				A1680C652B98EA4ED072F969 /* VaultBookmarkStore.swift in Sources */,
+				BE2A119E258DA1C90A5EE19D /* VaultWriter.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E152E2312FC2F9C10044EE7E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,7 +285,77 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		287D602E4F06D53C5409FEB9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = WikiReaderExtension;
+			target = D0FD0249A4F99E73DF6341BC /* WikiReaderExtension */;
+			targetProxy = 43D6DD709C8F6C7BFBD2C907 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		70B466975DF462002F0D58FA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = WikiReaderExtension/WikiReaderExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QUX9EWZ335;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WikiReaderExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.anifoca.WikiReader.WikiReaderExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AD3E482F34905C691EC755C4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = WikiReaderExtension/WikiReaderExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QUX9EWZ335;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WikiReaderExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.anifoca.WikiReader.WikiReaderExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		E152E23E2FC2F9C30044EE7E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -251,6 +482,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WikiReader.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = QUX9EWZ335;
@@ -283,6 +515,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WikiReader.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = QUX9EWZ335;
@@ -313,6 +546,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		DBB9544443E3F7D07D1BFC27 /* Build configuration list for PBXNativeTarget "WikiReaderExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD3E482F34905C691EC755C4 /* Release */,
+				70B466975DF462002F0D58FA /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		E152E2302FC2F9C10044EE7E /* Build configuration list for PBXProject "WikiReader" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
