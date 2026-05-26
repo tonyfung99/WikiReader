@@ -9,5 +9,11 @@
   },
   "enabledPlugins": {
     "axiom@axiom-marketplace": true
+  },
+  "permissions": {
+    "allow": [
+      "mcp__ccd_session_mgmt__search_session_transcripts",
+      "mcp__ccd_session_mgmt__list_sessions"
+    ]
   }
 }
