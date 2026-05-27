@@ -15,9 +15,11 @@
 		40169D5E79E4AC74CC563696 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3017206B0DFAFA5978F088 /* AppGroup.swift */; };
 		540CE371C65A9DF1D029DC24 /* URLClassifierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53F4777D72BC2DD8B998CBA /* URLClassifierTests.swift */; };
 		5D74D83AEF3F2B76DA164D1B /* FxTwitterClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ECC9D413C9D8B20CB8D04B5 /* FxTwitterClient.swift */; };
+		74E865FA52FC784471F11EA0 /* ArticleExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86AF7ECF5CB847D2BC8008F8 /* ArticleExtractor.swift */; };
 		77115EE87CB7F0B9A8115541 /* VaultAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A8DC4658E18C334F54E71B /* VaultAccess.swift */; };
 		87C1370CBAC0412A0996531A /* URLClassifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D1871AB6E35F67D7512CF0E /* URLClassifier.swift */; };
 		894824EC0F86595D1DAC42FE /* FxTwitterDecodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF310A4F617D93B73FC76CA8 /* FxTwitterDecodeTests.swift */; };
+		9029B8292106B3DE11C78D68 /* ArticleVideoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C467FD50D74F1FCE07E4A8A1 /* ArticleVideoTests.swift */; };
 		9B3955573558043273CB1AEB /* WikiReaderExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 4AA1FE28E97816250DFE1820 /* WikiReaderExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9D0A8D6A9AD01154697522E6 /* MarkdownParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCC3CE56892614A9CAEC5BAF /* MarkdownParserTests.swift */; };
 		A1680C652B98EA4ED072F969 /* VaultBookmarkStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F13FF39EC69202BEA4356C /* VaultBookmarkStore.swift */; };
@@ -69,11 +71,13 @@
 		5ECC9D413C9D8B20CB8D04B5 /* FxTwitterClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FxTwitterClient.swift; sourceTree = "<group>"; };
 		6BC1910D47ED781DA341B3D3 /* ShareFlow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ShareFlow.swift; sourceTree = "<group>"; };
 		775CF6F499303F68EA2C7354 /* MarkdownComposer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MarkdownComposer.swift; sourceTree = "<group>"; };
+		86AF7ECF5CB847D2BC8008F8 /* ArticleExtractor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ArticleExtractor.swift; sourceTree = "<group>"; };
 		8D1871AB6E35F67D7512CF0E /* URLClassifier.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = URLClassifier.swift; sourceTree = "<group>"; };
 		9894A7D905054F62B2C97A6F /* TweetContent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TweetContent.swift; sourceTree = "<group>"; };
 		A0A302682184DE41E6127699 /* CoreUtilitiesTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreUtilitiesTests.swift; sourceTree = "<group>"; };
 		A53F4777D72BC2DD8B998CBA /* URLClassifierTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = URLClassifierTests.swift; sourceTree = "<group>"; };
 		A93EFBE64F2383BE625945E9 /* VaultWriter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VaultWriter.swift; sourceTree = "<group>"; };
+		C467FD50D74F1FCE07E4A8A1 /* ArticleVideoTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ArticleVideoTests.swift; sourceTree = "<group>"; };
 		CF310A4F617D93B73FC76CA8 /* FxTwitterDecodeTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FxTwitterDecodeTests.swift; sourceTree = "<group>"; };
 		D0A8DC4658E18C334F54E71B /* VaultAccess.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VaultAccess.swift; sourceTree = "<group>"; };
 		D2A76DFA10A474203E9BC399 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
@@ -144,8 +148,8 @@
 				CF310A4F617D93B73FC76CA8 /* FxTwitterDecodeTests.swift */,
 				FCC3CE56892614A9CAEC5BAF /* MarkdownParserTests.swift */,
 				A53F4777D72BC2DD8B998CBA /* URLClassifierTests.swift */,
+				C467FD50D74F1FCE07E4A8A1 /* ArticleVideoTests.swift */,
 			);
-			name = WikiReaderTests;
 			path = WikiReaderTests;
 			sourceTree = "<group>";
 		};
@@ -163,6 +167,7 @@
 				D0A8DC4658E18C334F54E71B /* VaultAccess.swift */,
 				52F13FF39EC69202BEA4356C /* VaultBookmarkStore.swift */,
 				A93EFBE64F2383BE625945E9 /* VaultWriter.swift */,
+				86AF7ECF5CB847D2BC8008F8 /* ArticleExtractor.swift */,
 			);
 			name = SharedCore;
 			path = WikiReader/Core;
@@ -196,7 +201,6 @@
 				D5FE4352D9AD025771D3E7F5 /* ShareViewController.swift */,
 				6BC1910D47ED781DA341B3D3 /* ShareFlow.swift */,
 			);
-			name = WikiReaderExtension;
 			path = WikiReaderExtension;
 			sourceTree = "<group>";
 		};
@@ -329,6 +333,7 @@
 				894824EC0F86595D1DAC42FE /* FxTwitterDecodeTests.swift in Sources */,
 				9D0A8D6A9AD01154697522E6 /* MarkdownParserTests.swift in Sources */,
 				540CE371C65A9DF1D029DC24 /* URLClassifierTests.swift in Sources */,
+				9029B8292106B3DE11C78D68 /* ArticleVideoTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -349,6 +354,7 @@
 				77115EE87CB7F0B9A8115541 /* VaultAccess.swift in Sources */,
 				A1680C652B98EA4ED072F969 /* VaultBookmarkStore.swift in Sources */,
 				BE2A119E258DA1C90A5EE19D /* VaultWriter.swift in Sources */,
+				74E865FA52FC784471F11EA0 /* ArticleExtractor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

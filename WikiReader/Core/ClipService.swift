@@ -9,6 +9,7 @@ struct ClipResult {
 /// fetch its content, compose markdown, and write it into the vault.
 struct ClipService {
     var twitter = FxTwitterClient()
+    var articles = ArticleExtractor()
     var composer = MarkdownComposer()
     var writer = VaultWriter()
     var vault: VaultAccess
@@ -22,17 +23,22 @@ struct ClipService {
         case .tweet(let ref):
             let content = try await twitter.fetchTweet(ref)
             return try save(composer.compose(tweet: content))
-        case .video:
-            throw ClipError.unsupported("video clipping isn't built yet")
         case .article:
-            throw ClipError.unsupported("article clipping isn't built yet")
+            let article = try await articles.fetch(url)
+            return try save(composer.compose(article: article))
+        case .video:
+            return try save(composer.videoStub(for: url), subdirectory: "pending")
         }
     }
 
-    private func save(_ markdown: ComposedMarkdown) throws -> ClipResult {
+    private func save(_ markdown: ComposedMarkdown, subdirectory: String? = nil) throws -> ClipResult {
         let filename = Filename.make(title: markdown.title)
-        let fileURL = try vault.withVault { directory in
-            try writer.write(markdown.text, filename: filename, to: directory)
+        let fileURL = try vault.withVault { root in
+            let directory = subdirectory.map { root.appendingPathComponent($0, isDirectory: true) } ?? root
+            if subdirectory != nil {
+                try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            }
+            return try writer.write(markdown.text, filename: filename, to: directory)
         }
         return ClipResult(fileURL: fileURL, title: markdown.title)
     }

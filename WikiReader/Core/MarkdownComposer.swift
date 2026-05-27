@@ -13,6 +13,49 @@ struct MarkdownComposer {
         return ComposedMarkdown(title: title, text: text)
     }
 
+    func compose(article: ArticleContent) -> ComposedMarkdown {
+        var lines = ["---"]
+        lines.append("title: \(Self.yaml(article.title))")
+        lines.append("source_url: \(Self.yaml(article.sourceURL.absoluteString))")
+        lines.append("captured_at: \(Self.yaml(Date.now.formatted(.iso8601)))")
+        lines.append("type: article")
+        lines.append("tags: [clipped, article]")
+        lines.append("---")
+        let frontmatter = lines.joined(separator: "\n") + "\n"
+        let body = """
+        # \(article.title)
+
+        \(article.markdownBody)
+
+        [Source](\(article.sourceURL.absoluteString))
+        """
+        return ComposedMarkdown(title: article.title, text: frontmatter + "\n" + body + "\n")
+    }
+
+    /// A placeholder note for a video, queued for the home-machine
+    /// yt-dlp + Whisper job (no on-device transcription).
+    func videoStub(for url: URL) -> ComposedMarkdown {
+        let title = "Video: \(url.host ?? "link")"
+        var lines = ["---"]
+        lines.append("title: \(Self.yaml(title))")
+        lines.append("source_url: \(Self.yaml(url.absoluteString))")
+        lines.append("captured_at: \(Self.yaml(Date.now.formatted(.iso8601)))")
+        lines.append("type: video")
+        lines.append("status: pending_transcription")
+        lines.append("tags: [clipped, video, pending]")
+        lines.append("---")
+        let frontmatter = lines.joined(separator: "\n") + "\n"
+        let body = """
+        # \(title)
+
+        Queued for transcription — the home-machine job (yt-dlp + Whisper) will
+        replace this stub with the transcript.
+
+        [Watch](\(url.absoluteString))
+        """
+        return ComposedMarkdown(title: title, text: frontmatter + "\n" + body + "\n")
+    }
+
     // MARK: - Title
 
     static func title(for tweet: TweetContent) -> String {
