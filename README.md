@@ -21,8 +21,8 @@ read and write it too.
 - **Markdown rendering** — a hand-written parser + SwiftUI renderer: headings,
   lists, code blocks, blockquotes, **tables** (with column alignment), YAML
   frontmatter, and Obsidian `[[wiki-links]]`.
-- **Graph view** — a force-directed graph of the vault's wiki-links, drawn with
-  SwiftUI `Canvas`; drag nodes, tap to open a note.
+- **Graph view** — a scrollable force-directed graph of the vault's wiki-links,
+  paired with a searchable topic list; tap nodes or topics to open notes.
 
 ## Architecture
 

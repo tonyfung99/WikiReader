@@ -68,6 +68,65 @@ struct WikiLinkParserTests {
 }
 
 @MainActor
+struct VaultGraphTests {
+    @Test func topicSummariesCountIncomingOutgoingAndSortByConnectedness() {
+        let graph = VaultGraph(
+            nodes: [
+                GraphNode(id: "Index", url: URL(fileURLWithPath: "/Index.md")),
+                GraphNode(id: "Swift", url: URL(fileURLWithPath: "/Swift.md")),
+                GraphNode(id: "Missing", url: nil),
+                GraphNode(id: "Leaf", url: URL(fileURLWithPath: "/Leaf.md")),
+            ],
+            edges: [
+                GraphEdge(source: "Index", target: "Swift"),
+                GraphEdge(source: "Index", target: "Missing"),
+                GraphEdge(source: "Swift", target: "Index"),
+                GraphEdge(source: "Leaf", target: "Swift"),
+            ]
+        )
+
+        let topics = graph.topics
+
+        #expect(topics.map(\.id) == ["Swift", "Index", "Leaf", "Missing"])
+        #expect(topics[0].incoming == ["Index", "Leaf"])
+        #expect(topics[0].outgoing == ["Index"])
+        #expect(topics[0].connectionCount == 2)
+        #expect(topics[2].connectionCount == 1)
+        #expect(!topics[3].exists)
+    }
+
+    @Test func connectedNodeIDsIncludesIncomingAndOutgoingNeighbors() {
+        let graph = VaultGraph(
+            nodes: [
+                GraphNode(id: "A", url: URL(fileURLWithPath: "/A.md")),
+                GraphNode(id: "B", url: URL(fileURLWithPath: "/B.md")),
+                GraphNode(id: "C", url: URL(fileURLWithPath: "/C.md")),
+                GraphNode(id: "D", url: URL(fileURLWithPath: "/D.md")),
+            ],
+            edges: [
+                GraphEdge(source: "A", target: "B"),
+                GraphEdge(source: "C", target: "A"),
+                GraphEdge(source: "D", target: "B"),
+            ]
+        )
+
+        #expect(graph.connectedNodeIDs(to: "A") == ["B", "C"])
+        #expect(graph.connectedNodeIDs(to: "B") == ["A", "D"])
+        #expect(graph.connectedNodeIDs(to: "Z").isEmpty)
+    }
+
+    @Test func graphViewportContentSizeCreatesScrollableCanvas() {
+        let compact = CGSize(width: 390, height: 600)
+        let content = GraphViewport.contentSize(nodeCount: 24, viewport: compact)
+
+        #expect(content.width > compact.width)
+        #expect(content.height > compact.height)
+        #expect(content.width >= 720)
+        #expect(content.height >= 560)
+    }
+}
+
+@MainActor
 struct MarkdownComposerTests {
     private func tweet(text: String, name: String = "Ann", handle: String = "a") -> TweetContent {
         TweetContent(

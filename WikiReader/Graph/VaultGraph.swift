@@ -22,6 +22,17 @@ nonisolated struct GraphNode: Identifiable, Hashable {
     var exists: Bool { url != nil }
 }
 
+nonisolated struct GraphTopic: Identifiable, Hashable {
+    let node: GraphNode
+    let incoming: [String]
+    let outgoing: [String]
+
+    var id: String { node.id }
+    var url: URL? { node.url }
+    var exists: Bool { node.exists }
+    var connectionCount: Int { Set(incoming + outgoing).count }
+}
+
 nonisolated struct GraphEdge: Hashable {
     let source: String
     let target: String
@@ -32,6 +43,49 @@ nonisolated struct VaultGraph {
     let edges: [GraphEdge]
 
     var isEmpty: Bool { nodes.isEmpty }
+
+    var topics: [GraphTopic] {
+        nodes.map { node in
+            let incoming = edges
+                .filter { $0.target == node.id }
+                .map(\.source)
+                .sorted()
+            let outgoing = edges
+                .filter { $0.source == node.id }
+                .map(\.target)
+                .sorted()
+            return GraphTopic(node: node, incoming: incoming, outgoing: outgoing)
+        }
+        .sorted { lhs, rhs in
+            if lhs.connectionCount != rhs.connectionCount {
+                return lhs.connectionCount > rhs.connectionCount
+            }
+            if lhs.exists != rhs.exists {
+                return lhs.exists && !rhs.exists
+            }
+            if lhs.incoming.count != rhs.incoming.count {
+                return lhs.incoming.count > rhs.incoming.count
+            }
+            return lhs.id.localizedStandardCompare(rhs.id) == .orderedAscending
+        }
+    }
+
+    func topic(id: String) -> GraphTopic? {
+        topics.first { $0.id == id }
+    }
+
+    func connectedNodeIDs(to id: String) -> Set<String> {
+        var connected: Set<String> = []
+        for edge in edges {
+            if edge.source == id {
+                connected.insert(edge.target)
+            }
+            if edge.target == id {
+                connected.insert(edge.source)
+            }
+        }
+        return connected
+    }
 
     /// Walks the vault, builds a node per `.md` file (plus phantom nodes for
     /// link targets that don't exist yet), and an edge per `[[wiki-link]]`.

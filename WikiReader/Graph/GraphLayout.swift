@@ -1,5 +1,18 @@
 import SwiftUI
 
+nonisolated enum GraphViewport {
+    static func contentSize(nodeCount: Int, viewport: CGSize) -> CGSize {
+        let safeWidth = max(viewport.width, 1)
+        let safeHeight = max(viewport.height, 1)
+        let nodeScale = min(max(sqrt(Double(max(nodeCount, 1))) / 4.0, 1.15), 3.0)
+
+        return CGSize(
+            width: max(720, safeWidth * nodeScale),
+            height: max(560, safeHeight * nodeScale)
+        )
+    }
+}
+
 /// A small force-directed layout: nodes repel each other, edges act as springs,
 /// and a gentle gravity keeps the graph centered. Stepped once per animation
 /// frame by the view.
@@ -13,7 +26,6 @@ final class GraphLayout {
     private var velocities: [String: CGVector] = [:]
 
     var canvasSize: CGSize = .zero
-    var draggingID: String?
 
     /// True once motion is negligible, so the view can pause its animation
     /// schedule instead of stepping the simulation every frame forever.
@@ -52,27 +64,6 @@ final class GraphLayout {
 
     func position(for id: String) -> CGPoint {
         positions[id] ?? CGPoint(x: canvasSize.width / 2, y: canvasSize.height / 2)
-    }
-
-    func setDraggedPosition(_ point: CGPoint, for id: String) {
-        positions[id] = point
-        velocities[id] = .zero
-        quietFrames = 0
-        isSettled = false
-    }
-
-    func nearestNode(to point: CGPoint, within radius: Double) -> String? {
-        var best: String?
-        var bestDistance = radius
-        for node in nodes {
-            let pos = position(for: node.id)
-            let distance = hypot(pos.x - point.x, pos.y - point.y)
-            if distance <= bestDistance {
-                bestDistance = distance
-                best = node.id
-            }
-        }
-        return best
     }
 
     func step(dt: Double) {
@@ -128,7 +119,6 @@ final class GraphLayout {
         var maxObservedSpeed = 0.0
         for node in nodes {
             let id = node.id
-            if id == draggingID { continue }
 
             var velocity = velocities[id] ?? .zero
             var force = forces[id] ?? .zero
