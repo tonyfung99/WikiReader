@@ -61,6 +61,12 @@ private struct MainTabs: View {
             .tabItem { Label("Files", systemImage: "folder") }
 
             NavigationStack {
+                AskWikiView(root: root)
+                    .navigationTitle("Ask")
+            }
+            .tabItem { Label("Ask", systemImage: "questionmark.bubble") }
+
+            NavigationStack {
                 GraphScreen(root: root)
                     .navigationTitle("Graph")
             }

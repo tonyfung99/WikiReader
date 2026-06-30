@@ -3,10 +3,17 @@ import SwiftUI
 /// Loads a markdown file's contents and renders it.
 struct MarkdownFileView: View {
     let file: VaultFile
+    let root: URL?
 
     @State private var blocks: [MarkdownBlock] = []
     @State private var loadError: String?
     @State private var isLoading = true
+    @State private var linkedFile: VaultFile?
+
+    init(file: VaultFile, root: URL? = nil) {
+        self.file = file
+        self.root = root
+    }
 
     var body: some View {
         ScrollView {
@@ -28,11 +35,18 @@ struct MarkdownFileView: View {
         }
         .navigationTitle(file.displayName)
         .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(item: $linkedFile) { file in
+            MarkdownFileView(file: file, root: root)
+        }
         .task { await load() }
         .environment(\.openURL, OpenURLAction { url in
-            // Cross-note navigation isn't in v1; swallow wiki-link taps so they
-            // don't try to open an unknown scheme externally.
-            MarkdownInline.wikiLinkTarget(from: url) != nil ? .handled : .systemAction
+            guard let target = MarkdownInline.wikiLinkTarget(from: url) else {
+                return .systemAction
+            }
+            if let root, let file = WikiLinkResolver.resolve(target, in: root) {
+                linkedFile = file
+            }
+            return .handled
         })
     }
 
