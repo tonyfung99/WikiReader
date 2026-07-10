@@ -44,7 +44,7 @@ struct ContentView: View {
 }
 
 private enum MainTab: Hashable {
-    case files, ask, graph
+    case home, files, ask, graph
 }
 
 private struct MainTabs: View {
@@ -53,7 +53,7 @@ private struct MainTabs: View {
     var onChangeVault: () -> Void
 
     @State private var index: VaultIndex
-    @State private var selection: MainTab = .files
+    @State private var selection: MainTab = .home
     @State private var pendingQuestion: String?
 
     init(root: URL, store: VaultStore, onChangeVault: @escaping () -> Void) {
@@ -65,6 +65,12 @@ private struct MainTabs: View {
 
     var body: some View {
         TabView(selection: $selection) {
+            NavigationStack {
+                HomeView(root: root)
+            }
+            .tabItem { Label("Home", systemImage: "house") }
+            .tag(MainTab.home)
+
             NavigationStack {
                 FilesTabView(root: root, title: store.displayName ?? "Vault") { question in
                     pendingQuestion = question
