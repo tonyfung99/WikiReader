@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0446101372807DE13882CE64 /* CodeHighlighterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F99F6B50F02261233840C90 /* CodeHighlighterTests.swift */; };
 		08FD2A416CAADEDA6D30FE17 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2A76DFA10A474203E9BC399 /* Foundation.framework */; };
+		0D39096BB655156264F28F15 /* VaultSearcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AD1B944C27766C0D1B8171 /* VaultSearcherTests.swift */; };
 		0F019CEE2B39B08715203EFE /* Filename.swift in Sources */ = {isa = PBXBuildFile; fileRef = 248679148E6BBB773E4057CB /* Filename.swift */; };
 		19661B42974DB6C025286B5D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2A76DFA10A474203E9BC399 /* Foundation.framework */; };
 		25418949B75727F5BE8B4E37 /* ClipService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC6FAEE2CC28DF727CC6A242 /* ClipService.swift */; };
@@ -85,6 +86,7 @@
 		D2A76DFA10A474203E9BC399 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		D5FE4352D9AD025771D3E7F5 /* ShareViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		E152E2352FC2F9C10044EE7E /* WikiReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WikiReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E5AD1B944C27766C0D1B8171 /* VaultSearcherTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VaultSearcherTests.swift; sourceTree = "<group>"; };
 		EE3017206B0DFAFA5978F088 /* AppGroup.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppGroup.swift; sourceTree = "<group>"; };
 		FC6FAEE2CC28DF727CC6A242 /* ClipService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ClipService.swift; sourceTree = "<group>"; };
 		FCC3CE56892614A9CAEC5BAF /* MarkdownParserTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MarkdownParserTests.swift; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 				A53F4777D72BC2DD8B998CBA /* URLClassifierTests.swift */,
 				C467FD50D74F1FCE07E4A8A1 /* ArticleVideoTests.swift */,
 				3F99F6B50F02261233840C90 /* CodeHighlighterTests.swift */,
+				E5AD1B944C27766C0D1B8171 /* VaultSearcherTests.swift */,
 			);
 			path = WikiReaderTests;
 			sourceTree = "<group>";
@@ -338,6 +341,7 @@
 				540CE371C65A9DF1D029DC24 /* URLClassifierTests.swift in Sources */,
 				9029B8292106B3DE11C78D68 /* ArticleVideoTests.swift in Sources */,
 				0446101372807DE13882CE64 /* CodeHighlighterTests.swift in Sources */,
+				0D39096BB655156264F28F15 /* VaultSearcherTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
