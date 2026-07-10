@@ -25,7 +25,7 @@ struct GraphScreen: View {
             }
         }
         .navigationDestination(item: $selectedFile) { file in
-            MarkdownFileView(file: file)
+            MarkdownFileView(file: file, root: root)
         }
         .task {
             let url = root

@@ -51,7 +51,7 @@ private struct MainTabs: View {
     var body: some View {
         TabView {
             NavigationStack {
-                VaultBrowserView(directory: root, title: store.displayName ?? "Vault")
+                VaultBrowserView(directory: root, title: store.displayName ?? "Vault", root: root)
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
                             Button("Change Vault", systemImage: "folder.badge.gearshape", action: onChangeVault)

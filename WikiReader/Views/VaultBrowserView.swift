@@ -5,6 +5,7 @@ import SwiftUI
 struct VaultBrowserView: View {
     let directory: URL
     let title: String
+    let root: URL
 
     @State private var files: [VaultFile] = []
     @State private var didLoad = false
@@ -21,13 +22,13 @@ struct VaultBrowserView: View {
             ForEach(files) { file in
                 if file.isDirectory {
                     NavigationLink {
-                        VaultBrowserView(directory: file.url, title: file.name)
+                        VaultBrowserView(directory: file.url, title: file.name, root: root)
                     } label: {
                         Label(file.name, systemImage: "folder")
                     }
                 } else {
                     NavigationLink {
-                        MarkdownFileView(file: file)
+                        MarkdownFileView(file: file, root: root)
                     } label: {
                         Label(file.displayName, systemImage: file.isPlaceholder ? "arrow.down.circle" : "doc.text")
                     }
@@ -61,7 +62,7 @@ private func previewVaultDirectory() -> URL {
 
 #Preview {
     NavigationStack {
-        VaultBrowserView(directory: previewVaultDirectory(), title: "Vault")
+        VaultBrowserView(directory: previewVaultDirectory(), title: "Vault", root: previewVaultDirectory())
     }
 }
 #endif
