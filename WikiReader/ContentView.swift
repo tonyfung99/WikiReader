@@ -48,6 +48,15 @@ private struct MainTabs: View {
     let store: VaultStore
     var onChangeVault: () -> Void
 
+    @State private var index: VaultIndex
+
+    init(root: URL, store: VaultStore, onChangeVault: @escaping () -> Void) {
+        self.root = root
+        self.store = store
+        self.onChangeVault = onChangeVault
+        _index = State(initialValue: VaultIndex(root: root))
+    }
+
     var body: some View {
         TabView {
             NavigationStack {
@@ -72,6 +81,7 @@ private struct MainTabs: View {
             }
             .tabItem { Label("Graph", systemImage: "point.3.connected.trianglepath.dotted") }
         }
+        .environment(index)
     }
 }
 

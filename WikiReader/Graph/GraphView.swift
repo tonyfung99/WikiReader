@@ -4,18 +4,23 @@ import SwiftUI
 struct GraphScreen: View {
     let root: URL
 
-    @State private var graph: VaultGraph?
-    @State private var isLoading = true
+    @Environment(VaultIndex.self) private var index: VaultIndex?
+
+    @State private var localGraph: VaultGraph?
+    @State private var isLocalLoading = false
     @State private var selectedFile: VaultFile?
+
+    private var graph: VaultGraph? { index?.graph ?? localGraph }
+    private var isLoading: Bool { index.map(\.isBuilding) ?? isLocalLoading }
 
     var body: some View {
         Group {
-            if isLoading {
-                ProgressView("Building graph…")
-            } else if let graph, !graph.isEmpty {
+            if let graph, !graph.isEmpty {
                 GraphExplorerView(graph: graph) { node in
                     open(node)
                 }
+            } else if isLoading || graph == nil {
+                ProgressView("Building graph…")
             } else {
                 ContentUnavailableView(
                     "No links yet",
@@ -28,11 +33,16 @@ struct GraphScreen: View {
             MarkdownFileView(file: file, root: root)
         }
         .task {
-            let url = root
-            graph = await Task.detached(priority: .userInitiated) {
-                VaultGraph.build(root: url)
-            }.value
-            isLoading = false
+            if let index {
+                index.ensureBuilt()
+            } else if localGraph == nil {
+                isLocalLoading = true
+                let url = root
+                localGraph = await Task.detached(priority: .userInitiated) {
+                    VaultGraph.build(root: url)
+                }.value
+                isLocalLoading = false
+            }
         }
     }
 
