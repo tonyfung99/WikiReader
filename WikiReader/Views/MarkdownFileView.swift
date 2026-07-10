@@ -5,10 +5,19 @@ struct MarkdownFileView: View {
     let file: VaultFile
     let root: URL?
 
+    @Environment(VaultIndex.self) private var index: VaultIndex?
+
     @State private var blocks: [MarkdownBlock] = []
     @State private var loadError: String?
     @State private var isLoading = true
     @State private var linkedFile: VaultFile?
+
+    /// Titles of notes that link to this one, from the shared graph.
+    private var backlinks: [String] {
+        guard root != nil, let graph = index?.graph else { return [] }
+        let name = file.displayName
+        return Set(graph.edges.filter { $0.target == name }.map(\.source)).sorted()
+    }
 
     init(file: VaultFile, root: URL? = nil) {
         self.file = file
@@ -27,9 +36,16 @@ struct MarkdownFileView: View {
                         description: Text(loadError)
                     )
                 } else {
-                    MarkdownView(blocks: blocks, baseDirectory: file.url.deletingLastPathComponent())
-                        .padding()
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    VStack(alignment: .leading, spacing: 18) {
+                        MarkdownView(blocks: blocks, baseDirectory: file.url.deletingLastPathComponent())
+                        if !backlinks.isEmpty {
+                            BacklinksView(names: backlinks) { name in
+                                openBacklink(name)
+                            }
+                        }
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
         }
@@ -38,7 +54,10 @@ struct MarkdownFileView: View {
         .navigationDestination(item: $linkedFile) { file in
             MarkdownFileView(file: file, root: root)
         }
-        .task { await load() }
+        .task {
+            index?.ensureBuilt()
+            await load()
+        }
         .environment(\.openURL, OpenURLAction { url in
             guard let target = MarkdownInline.wikiLinkTarget(from: url) else {
                 return .systemAction
@@ -48,6 +67,11 @@ struct MarkdownFileView: View {
             }
             return .handled
         })
+    }
+
+    private func openBacklink(_ name: String) {
+        guard let root, let target = WikiLinkResolver.resolve(name, in: root) else { return }
+        linkedFile = target
     }
 
     private func load() async {
@@ -66,6 +90,48 @@ struct MarkdownFileView: View {
         case .failure(let error): loadError = error.localizedDescription
         }
         isLoading = false
+    }
+}
+
+private struct BacklinksView: View {
+    let names: [String]
+    var onOpen: (String) -> Void
+
+    @State private var expanded = true
+
+    var body: some View {
+        DisclosureGroup(isExpanded: $expanded) {
+            VStack(alignment: .leading, spacing: 0) {
+                ForEach(names, id: \.self) { name in
+                    Button {
+                        onOpen(name)
+                    } label: {
+                        HStack(spacing: 10) {
+                            Image(systemName: "arrow.turn.up.left")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                            Text(name)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.footnote)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .contentShape(Rectangle())
+                        .padding(.vertical, 8)
+                    }
+                    .buttonStyle(.plain)
+                    Divider()
+                }
+            }
+            .padding(.top, 4)
+        } label: {
+            Label("Linked from (\(names.count))", systemImage: "arrow.turn.up.left")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .padding(10)
+        .background(Color.secondary.opacity(0.08))
+        .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 }
 
