@@ -134,6 +134,29 @@ struct MarkdownParserTests {
         #expect(blocks.allSatisfy { if case .table = $0.kind { false } else { true } })
     }
 
+    @Test func parsesStandaloneImageBlock() throws {
+        let blocks = MarkdownParser.parse("![diagram](media/pic.png)")
+        let found = blocks.contains {
+            if case .image(let alt, let source) = $0.kind {
+                alt == "diagram" && source == "media/pic.png"
+            } else { false }
+        }
+        #expect(found)
+    }
+
+    @Test func imageLineBreaksParagraph() {
+        let blocks = MarkdownParser.parse("some text\n![p](a.png)\nmore text")
+        let images = blocks.filter { if case .image = $0.kind { true } else { false } }
+        let paragraphs = blocks.filter { if case .paragraph = $0.kind { true } else { false } }
+        #expect(images.count == 1)
+        #expect(paragraphs.count == 2)
+    }
+
+    @Test func inlineImageInSentenceStaysParagraph() {
+        let blocks = MarkdownParser.parse("see ![icon](i.png) here")
+        #expect(!blocks.contains { if case .image = $0.kind { true } else { false } })
+    }
+
     @Test func extractsFrontmatter() throws {
         let blocks = MarkdownParser.parse("---\ntitle: X\ntype: tweet\n---\n# H")
         guard case .frontmatter(let lines) = try #require(blocks.first).kind else {

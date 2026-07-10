@@ -14,6 +14,7 @@ nonisolated struct MarkdownBlock: Identifiable {
         case code(language: String?, code: String)
         case quote(lines: [String])
         case callout(type: String, title: String, lines: [String], foldable: Bool)
+        case image(alt: String, source: String)
         case table(headers: [String], alignments: [ColumnAlignment], rows: [[String]])
         case rule
     }

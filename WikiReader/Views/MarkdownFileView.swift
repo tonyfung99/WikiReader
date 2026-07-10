@@ -27,7 +27,7 @@ struct MarkdownFileView: View {
                         description: Text(loadError)
                     )
                 } else {
-                    MarkdownView(blocks: blocks)
+                    MarkdownView(blocks: blocks, baseDirectory: file.url.deletingLastPathComponent())
                         .padding()
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }

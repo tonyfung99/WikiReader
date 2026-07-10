@@ -3,6 +3,7 @@ import SwiftUI
 /// Renders parsed markdown blocks as SwiftUI views.
 struct MarkdownView: View {
     let blocks: [MarkdownBlock]
+    var baseDirectory: URL? = nil
 
     var body: some View {
         LazyVStack(alignment: .leading, spacing: 14) {
@@ -61,6 +62,9 @@ struct MarkdownView: View {
 
         case .callout(let type, let title, let lines, let foldable):
             CalloutView(type: type, title: title, lines: lines, foldable: foldable)
+
+        case .image(let alt, let source):
+            MarkdownImageView(alt: alt, source: source, baseDirectory: baseDirectory)
 
         case .table(let headers, let alignments, let rows):
             MarkdownTableView(headers: headers, alignments: alignments, rows: rows)
@@ -139,6 +143,60 @@ private struct MarkdownTableView: View {
         case .center: return .center
         case .trailing: return .trailing
         }
+    }
+}
+
+private struct MarkdownImageView: View {
+    let alt: String
+    let source: String
+    let baseDirectory: URL?
+
+    var body: some View {
+        Group {
+            if let url = remoteURL {
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image.resizable().scaledToFit()
+                    case .failure:
+                        placeholder
+                    default:
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                    }
+                }
+            } else if let image = localImage {
+                Image(uiImage: image).resizable().scaledToFit()
+            } else {
+                placeholder
+            }
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .accessibilityLabel(alt.isEmpty ? "Image" : alt)
+    }
+
+    private var remoteURL: URL? {
+        let lower = source.lowercased()
+        guard lower.hasPrefix("http://") || lower.hasPrefix("https://") else { return nil }
+        return URL(string: source)
+    }
+
+    private var localImage: UIImage? {
+        guard let baseDirectory else { return nil }
+        let decoded = source.removingPercentEncoding ?? source
+        let url = baseDirectory.appendingPathComponent(decoded)
+        guard let data = try? Data(contentsOf: url) else { return nil }
+        return UIImage(data: data)
+    }
+
+    private var placeholder: some View {
+        Label(alt.isEmpty ? "Image unavailable" : alt, systemImage: "photo")
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(Color.secondary.opacity(0.08))
     }
 }
 
@@ -270,6 +328,8 @@ private struct CalloutView: View {
     | --- | :---: |
     | Tables | done |
     | Graph view | done |
+
+    ![WikiReader](https://www.apple.com/favicon.ico)
 
     ```
     let answer = 42

@@ -42,6 +42,9 @@ nonisolated enum MarkdownParser {
                 let (block, next) = parseList(lines, start: index)
                 blocks.append(block)
                 index = next
+            } else if let image = parseImage(trimmed) {
+                blocks.append(image)
+                index += 1
             } else if isTableStart(lines, index) {
                 let (block, next) = parseTable(lines, start: index)
                 blocks.append(block)
@@ -145,6 +148,20 @@ nonisolated enum MarkdownParser {
         ))
     }
 
+    private static func parseImage(_ trimmed: String) -> MarkdownBlock? {
+        guard trimmed.hasPrefix("!"),
+              let regex = try? NSRegularExpression(pattern: "^!\\[([^\\]]*)\\]\\(([^)]+)\\)$") else {
+            return nil
+        }
+        let ns = trimmed as NSString
+        guard let match = regex.firstMatch(in: trimmed, range: NSRange(location: 0, length: ns.length)) else {
+            return nil
+        }
+        let alt = ns.substring(with: match.range(at: 1))
+        let source = ns.substring(with: match.range(at: 2)).trimmingCharacters(in: .whitespaces)
+        return MarkdownBlock(kind: .image(alt: alt, source: source))
+    }
+
     private static func parseList(_ lines: [String], start: Int) -> (MarkdownBlock, Int) {
         var items: [MarkdownListItem] = []
         var counters: [Int: Int] = [:]
@@ -205,7 +222,8 @@ nonisolated enum MarkdownParser {
                 || isBullet(trimmed)
                 || isOrdered(trimmed)
                 || isHorizontalRule(trimmed)
-                || isTableStart(lines, index) {
+                || isTableStart(lines, index)
+                || parseImage(trimmed) != nil {
                 break
             }
             collected.append(trimmed)
