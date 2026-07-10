@@ -2,6 +2,12 @@ import SwiftUI
 
 struct AskWikiView: View {
     let root: URL
+    @Binding var pendingQuestion: String?
+
+    init(root: URL, pendingQuestion: Binding<String?> = .constant(nil)) {
+        self.root = root
+        self._pendingQuestion = pendingQuestion
+    }
 
     @AppStorage("wikiDaemon.baseURL") private var baseURLString = "https://wiki.artanis-tech.com"
     @AppStorage("wikiDaemon.saveAnswers") private var saveAnswers = true
@@ -31,9 +37,14 @@ struct AskWikiView: View {
             MarkdownFileView(file: file, root: root)
         }
         .onAppear {
-            guard !hasLoadedToken else { return }
-            token = WikiDaemonTokenStore.load()
-            hasLoadedToken = true
+            if !hasLoadedToken {
+                token = WikiDaemonTokenStore.load()
+                hasLoadedToken = true
+            }
+            consumePendingQuestion()
+        }
+        .onChange(of: pendingQuestion) { _, _ in
+            consumePendingQuestion()
         }
         .onChange(of: token) { _, newValue in
             guard hasLoadedToken else { return }
@@ -161,6 +172,13 @@ struct AskWikiView: View {
             text = "http://\(text)"
         }
         return URL(string: text)
+    }
+
+    @MainActor
+    private func consumePendingQuestion() {
+        guard let pending = pendingQuestion, !pending.isEmpty else { return }
+        question = pending
+        pendingQuestion = nil
     }
 
     @MainActor

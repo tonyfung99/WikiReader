@@ -43,12 +43,18 @@ struct ContentView: View {
     }
 }
 
+private enum MainTab: Hashable {
+    case files, ask, graph
+}
+
 private struct MainTabs: View {
     let root: URL
     let store: VaultStore
     var onChangeVault: () -> Void
 
     @State private var index: VaultIndex
+    @State private var selection: MainTab = .files
+    @State private var pendingQuestion: String?
 
     init(root: URL, store: VaultStore, onChangeVault: @escaping () -> Void) {
         self.root = root
@@ -58,28 +64,34 @@ private struct MainTabs: View {
     }
 
     var body: some View {
-        TabView {
+        TabView(selection: $selection) {
             NavigationStack {
-                VaultBrowserView(directory: root, title: store.displayName ?? "Vault", root: root)
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button("Change Vault", systemImage: "folder.badge.gearshape", action: onChangeVault)
-                        }
+                FilesTabView(root: root, title: store.displayName ?? "Vault") { question in
+                    pendingQuestion = question
+                    selection = .ask
+                }
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("Change Vault", systemImage: "folder.badge.gearshape", action: onChangeVault)
                     }
+                }
             }
             .tabItem { Label("Files", systemImage: "folder") }
+            .tag(MainTab.files)
 
             NavigationStack {
-                AskWikiView(root: root)
+                AskWikiView(root: root, pendingQuestion: $pendingQuestion)
                     .navigationTitle("Ask")
             }
             .tabItem { Label("Ask", systemImage: "questionmark.bubble") }
+            .tag(MainTab.ask)
 
             NavigationStack {
                 GraphScreen(root: root)
                     .navigationTitle("Graph")
             }
             .tabItem { Label("Graph", systemImage: "point.3.connected.trianglepath.dotted") }
+            .tag(MainTab.graph)
         }
         .environment(index)
     }
