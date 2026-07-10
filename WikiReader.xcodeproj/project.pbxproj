@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0446101372807DE13882CE64 /* CodeHighlighterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F99F6B50F02261233840C90 /* CodeHighlighterTests.swift */; };
 		08FD2A416CAADEDA6D30FE17 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2A76DFA10A474203E9BC399 /* Foundation.framework */; };
 		0F019CEE2B39B08715203EFE /* Filename.swift in Sources */ = {isa = PBXBuildFile; fileRef = 248679148E6BBB773E4057CB /* Filename.swift */; };
 		19661B42974DB6C025286B5D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2A76DFA10A474203E9BC399 /* Foundation.framework */; };
@@ -64,6 +65,7 @@
 
 /* Begin PBXFileReference section */
 		248679148E6BBB773E4057CB /* Filename.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Filename.swift; sourceTree = "<group>"; };
+		3F99F6B50F02261233840C90 /* CodeHighlighterTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CodeHighlighterTests.swift; sourceTree = "<group>"; };
 		3FBDD029F49FE596C7D9BF4E /* WikiReaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WikiReaderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		46C256EE1FC2F31DB64E2EEB /* ClipError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ClipError.swift; sourceTree = "<group>"; };
 		4AA1FE28E97816250DFE1820 /* WikiReaderExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WikiReaderExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -149,6 +151,7 @@
 				FCC3CE56892614A9CAEC5BAF /* MarkdownParserTests.swift */,
 				A53F4777D72BC2DD8B998CBA /* URLClassifierTests.swift */,
 				C467FD50D74F1FCE07E4A8A1 /* ArticleVideoTests.swift */,
+				3F99F6B50F02261233840C90 /* CodeHighlighterTests.swift */,
 			);
 			path = WikiReaderTests;
 			sourceTree = "<group>";
@@ -334,6 +337,7 @@
 				9D0A8D6A9AD01154697522E6 /* MarkdownParserTests.swift in Sources */,
 				540CE371C65A9DF1D029DC24 /* URLClassifierTests.swift in Sources */,
 				9029B8292106B3DE11C78D68 /* ArticleVideoTests.swift in Sources */,
+				0446101372807DE13882CE64 /* CodeHighlighterTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

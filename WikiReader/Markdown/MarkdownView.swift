@@ -43,7 +43,7 @@ struct MarkdownView: View {
 
         case .code(_, let code):
             ScrollView(.horizontal, showsIndicators: false) {
-                Text(code)
+                Text(CodeHighlighter.attributed(code))
                     .font(.system(.callout, design: .monospaced))
                     .padding(12)
             }
@@ -331,8 +331,10 @@ private struct CalloutView: View {
 
     ![WikiReader](https://www.apple.com/favicon.ico)
 
-    ```
+    ```swift
+    // the answer
     let answer = 42
+    print("hello")
     ```
     """
     ScrollView {
