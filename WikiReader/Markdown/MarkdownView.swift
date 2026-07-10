@@ -59,6 +59,9 @@ struct MarkdownView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
 
+        case .callout(let type, let title, let lines, let foldable):
+            CalloutView(type: type, title: title, lines: lines, foldable: foldable)
+
         case .table(let headers, let alignments, let rows):
             MarkdownTableView(headers: headers, alignments: alignments, rows: rows)
 
@@ -161,6 +164,78 @@ private struct FrontmatterView: View {
     }
 }
 
+private struct CalloutView: View {
+    let type: String
+    let title: String
+    let lines: [String]
+    let foldable: Bool
+
+    @State private var expanded = false
+
+    private var icon: String {
+        switch type {
+        case "note": "pencil"
+        case "info": "info.circle"
+        case "tip", "hint": "lightbulb"
+        case "warning", "caution": "exclamationmark.triangle"
+        case "danger", "error", "bug": "xmark.octagon"
+        case "quote", "cite": "quote.opening"
+        case "success", "check", "done": "checkmark.circle"
+        case "question", "help", "faq": "questionmark.circle"
+        default: "pin"
+        }
+    }
+
+    private var tint: Color {
+        switch type {
+        case "note", "info": .blue
+        case "tip", "hint": .teal
+        case "warning", "caution": .orange
+        case "danger", "error", "bug": .red
+        case "success", "check", "done": .green
+        case "question", "help", "faq": .purple
+        default: .gray
+        }
+    }
+
+    var body: some View {
+        Group {
+            if foldable {
+                DisclosureGroup(isExpanded: $expanded) {
+                    bodyText.padding(.top, 4)
+                } label: {
+                    header
+                }
+            } else {
+                VStack(alignment: .leading, spacing: 6) {
+                    header
+                    if !lines.isEmpty {
+                        bodyText
+                    }
+                }
+            }
+        }
+        .padding(12)
+        .background(tint.opacity(0.1))
+        .overlay(alignment: .leading) {
+            Rectangle().fill(tint).frame(width: 3)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+
+    private var header: some View {
+        Label(title, systemImage: icon)
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(tint)
+    }
+
+    private var bodyText: some View {
+        Text(MarkdownInline.attributed(lines.joined(separator: "\n")))
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
 #Preview {
     let sample = """
     ---
@@ -184,6 +259,12 @@ private struct FrontmatterView: View {
     2. step two
 
     > a block quote
+
+    > [!warning] Careful
+    > Callouts render with icon and tint.
+
+    > [!tip]- Folded tip
+    > Hidden until expanded.
 
     | Feature | Status |
     | --- | :---: |

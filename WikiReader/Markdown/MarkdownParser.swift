@@ -119,7 +119,30 @@ nonisolated enum MarkdownParser {
             quoted.append(line.hasPrefix(" ") ? String(line.dropFirst()) : line)
             index += 1
         }
+        if let callout = parseCallout(quoted) {
+            return (callout, index)
+        }
         return (MarkdownBlock(kind: .quote(lines: quoted)), index)
+    }
+
+    private static func parseCallout(_ quoted: [String]) -> MarkdownBlock? {
+        guard let first = quoted.first,
+              let regex = try? NSRegularExpression(pattern: "^\\[!([A-Za-z]+)\\](-?)\\s*(.*)$") else {
+            return nil
+        }
+        let ns = first as NSString
+        guard let match = regex.firstMatch(in: first, range: NSRange(location: 0, length: ns.length)) else {
+            return nil
+        }
+        let type = ns.substring(with: match.range(at: 1)).lowercased()
+        let foldable = ns.substring(with: match.range(at: 2)) == "-"
+        let title = ns.substring(with: match.range(at: 3)).trimmingCharacters(in: .whitespaces)
+        return MarkdownBlock(kind: .callout(
+            type: type,
+            title: title.isEmpty ? type.capitalized : title,
+            lines: Array(quoted.dropFirst()),
+            foldable: foldable
+        ))
     }
 
     private static func parseList(_ lines: [String], start: Int) -> (MarkdownBlock, Int) {

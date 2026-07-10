@@ -13,6 +13,7 @@ nonisolated struct MarkdownBlock: Identifiable {
         case list(items: [MarkdownListItem])
         case code(language: String?, code: String)
         case quote(lines: [String])
+        case callout(type: String, title: String, lines: [String], foldable: Bool)
         case table(headers: [String], alignments: [ColumnAlignment], rows: [[String]])
         case rule
     }

@@ -19,6 +19,48 @@ struct MarkdownParserTests {
         return nil
     }
 
+    private func firstCallout(_ blocks: [MarkdownBlock]) -> (type: String, title: String, lines: [String], foldable: Bool)? {
+        for block in blocks {
+            if case .callout(let type, let title, let lines, let foldable) = block.kind {
+                return (type, title, lines, foldable)
+            }
+        }
+        return nil
+    }
+
+    @Test func parsesCalloutWithTitle() throws {
+        let md = """
+        > [!warning] Watch out
+        > This is the body.
+        > Second line.
+        """
+        let callout = try #require(firstCallout(MarkdownParser.parse(md)))
+        #expect(callout.type == "warning")
+        #expect(callout.title == "Watch out")
+        #expect(callout.lines == ["This is the body.", "Second line."])
+        #expect(callout.foldable == false)
+    }
+
+    @Test func calloutWithoutTitleUsesCapitalizedType() throws {
+        let md = "> [!note]\n> body"
+        let callout = try #require(firstCallout(MarkdownParser.parse(md)))
+        #expect(callout.type == "note")
+        #expect(callout.title == "Note")
+    }
+
+    @Test func foldableCalloutDetected() throws {
+        let md = "> [!tip]- Folded tip\n> hidden body"
+        let callout = try #require(firstCallout(MarkdownParser.parse(md)))
+        #expect(callout.foldable == true)
+        #expect(callout.title == "Folded tip")
+    }
+
+    @Test func plainQuoteStaysQuote() {
+        let blocks = MarkdownParser.parse("> just a quote\n> second line")
+        #expect(blocks.contains { if case .quote = $0.kind { true } else { false } })
+        #expect(!blocks.contains { if case .callout = $0.kind { true } else { false } })
+    }
+
     @Test func parsesNestedListDepths() throws {
         let md = """
         - top
