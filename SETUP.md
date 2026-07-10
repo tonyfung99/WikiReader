@@ -51,6 +51,7 @@ poorly).
   `#if os(macOS)` in `VaultAccess`).
 - Files are written temp-then-renamed (`VaultWriter`) so iCloud / llm_wiki
   never observe a partial file.
-- Only the Twitter/X path is implemented in `ClipService`; article and video
-  URLs return a clear "not built yet" message. Extending = a new case in
-  `ClipService.clip` + a fetcher in `Core/`.
+- Twitter/X **and** article clipping are fully implemented in `ClipService`;
+  video URLs write a `pending/` stub for a (future) home-machine transcription
+  job to pick up. Extending = a new case in `ClipService.clip` + a fetcher in
+  `Core/`.

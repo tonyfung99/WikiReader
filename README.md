@@ -5,22 +5,34 @@ them back — a lightweight, Obsidian-style vault viewer plus a Share Extension,
 built in SwiftUI with **no third-party dependencies**.
 
 WikiReader writes Markdown files into a folder you choose (e.g. in iCloud
-Drive). A share extension clips Twitter/X posts straight from the iOS share
-sheet; the host app browses, renders, and visualizes the vault — including a
-force-directed graph of `[[wiki-links]]`. Because the vault is just a folder of
+Drive). A share extension clips Twitter/X posts and articles straight from the
+iOS share sheet; the host app browses, searches, renders, and visualizes the
+vault — including a force-directed graph of `[[wiki-links]]` — and can ask the
+companion wiki daemon questions. Because the vault is just a folder of
 `.md` files, desktop tools (Obsidian, knowledge-base ingesters, scripts) can
 read and write it too.
 
 ## Features
 
-- **Share Extension** — clip a Twitter/X post from any app's share sheet; the
-  post content is fetched via fxtwitter and written as a Markdown note (YAML
-  frontmatter + body), including links found in the post.
+- **Share Extension** — clip a link from any app's share sheet. Twitter/X posts
+  (fetched via fxtwitter) **and** articles are clipped fully and written as
+  Markdown notes (YAML frontmatter + body), including links found in the source.
+  Video URLs write a `pending/` stub awaiting a home-machine transcription job.
 - **Vault viewer** — browse folders and notes in a vault you pick once
   (persisted via a security-scoped bookmark).
 - **Markdown rendering** — a hand-written parser + SwiftUI renderer: headings,
-  lists, code blocks, blockquotes, **tables** (with column alignment), YAML
+  nested/task lists, code blocks (with minimal syntax highlighting), blockquotes,
+  callouts, standalone images, **tables** (with column alignment), YAML
   frontmatter, and Obsidian `[[wiki-links]]`.
+- **Full-text search** — the Files tab searches note bodies, not just titles;
+  when nothing matches you can hand the query straight to the wiki.
+- **Backlinks** — a panel on each note lists the other notes that link to it.
+- **Home tab** — recents, a wiki index, and the companion daemon's log at a
+  glance.
+- **Ask the wiki** — the Ask tab talks to the companion `wiki-daemon` HTTP API
+  (`/api/v1/health`, async `/api/v1/query` jobs) over LAN/Tailscale with a bearer
+  token stored in the Keychain; answers cite `[[wiki-links]]` that open the local
+  notes.
 - **Graph view** — a scrollable force-directed graph of the vault's wiki-links,
   paired with a searchable topic list; tap nodes or topics to open notes.
 
@@ -101,8 +113,9 @@ WikiReaderExtension/   share extension (ShareViewController + status UI)
 
 ## Status
 
-- ✅ Vault viewer, Markdown rendering (incl. tables and wiki-links), graph view.
-- ✅ Twitter/X clipping via the share extension.
-- 🚧 Article and video clipping are stubbed — `ClipService` returns a clear
-  "not built yet" message. Adding them is a new case in `ClipService.clip`
-  plus a fetcher in `Core/`.
+- ✅ Vault viewer, Markdown rendering (incl. tables and wiki-links), graph view,
+  full-text search, backlinks, and the Home tab.
+- ✅ Twitter/X **and** article clipping via the share extension.
+- ✅ Ask the wiki via the companion `wiki-daemon` HTTP API.
+- 🚧 Video clipping writes a `pending/` stub — a home-machine transcription job
+  is meant to pick it up and turn it into a note later.

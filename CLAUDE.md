@@ -70,5 +70,8 @@ xcodebuild test -project WikiReader.xcodeproj -scheme WikiReader \
 - iOS bookmarks use no `.withSecurityScope` (that option is macOS-only).
 - Notes are written temp-then-rename (`VaultWriter`) so watchers never see a
   partial file.
-- Only the Twitter/X clip path is implemented; article/video return a clear
-  "not built yet" error in `ClipService`.
+- Twitter/X and article clipping are fully implemented; video URLs write a
+  `pending/` stub for a (future) home-machine transcription job.
+- The Ask tab talks to the companion `wiki-daemon` HTTP API (health + async
+  query jobs, bearer token in Keychain). See
+  `docs/wiki-daemon-ios-api-requirements.md`.
