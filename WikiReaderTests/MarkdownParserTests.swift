@@ -12,6 +12,60 @@ struct MarkdownParserTests {
         return nil
     }
 
+    private func firstList(_ blocks: [MarkdownBlock]) -> [MarkdownListItem]? {
+        for block in blocks {
+            if case .list(let items) = block.kind { return items }
+        }
+        return nil
+    }
+
+    @Test func parsesNestedListDepths() throws {
+        let md = """
+        - top
+          - child
+            - grandchild
+        - top two
+        """
+        let items = try #require(firstList(MarkdownParser.parse(md)))
+        #expect(items.map(\.text) == ["top", "child", "grandchild", "top two"])
+        #expect(items.map(\.depth) == [0, 1, 2, 0])
+        #expect(items.allSatisfy { $0.number == nil && $0.checked == nil })
+    }
+
+    @Test func parsesTaskListStates() throws {
+        let md = """
+        - [ ] open item
+        - [x] done item
+        - plain item
+        """
+        let items = try #require(firstList(MarkdownParser.parse(md)))
+        #expect(items.map(\.checked) == [false, true, nil])
+        #expect(items.map(\.text) == ["open item", "done item", "plain item"])
+    }
+
+    @Test func numbersOrderedItemsPerDepth() throws {
+        let md = """
+        1. first
+        2. second
+           - detail
+        3. third
+        """
+        let items = try #require(firstList(MarkdownParser.parse(md)))
+        #expect(items.map(\.number) == [1, 2, nil, 3])
+        #expect(items.map(\.depth) == [0, 0, 1, 0])
+    }
+
+    @Test func mixedMarkersStayOneListBlock() throws {
+        let md = """
+        1. step
+           - note under step
+        2. next step
+        """
+        let blocks = MarkdownParser.parse(md)
+        let listBlocks = blocks.filter { if case .list = $0.kind { true } else { false } }
+        #expect(listBlocks.count == 1)
+    }
+
     @Test func parsesTableWithAlignments() throws {
         let md = """
         | Name | Role | Score |
@@ -63,8 +117,8 @@ struct MarkdownParserTests {
         ---
         """
         let kinds = MarkdownParser.parse(md).map(\.kind)
-        #expect(kinds.contains { if case .bulletList(let i) = $0 { i == ["a", "b"] } else { false } })
-        #expect(kinds.contains { if case .numberedList(let i) = $0 { i == ["one", "two"] } else { false } })
+        #expect(kinds.contains { if case .list(let items) = $0 { items.map(\.text) == ["a", "b"] && items.allSatisfy { $0.number == nil } } else { false } })
+        #expect(kinds.contains { if case .list(let items) = $0 { items.compactMap(\.number) == [1, 2] } else { false } })
         #expect(kinds.contains { if case .quote = $0 { true } else { false } })
         #expect(kinds.contains { if case .code(let lang, _) = $0 { lang == "swift" } else { false } })
         #expect(kinds.contains { if case .rule = $0 { true } else { false } })

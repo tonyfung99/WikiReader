@@ -28,26 +28,15 @@ struct MarkdownView: View {
             Text(MarkdownInline.attributed(text))
                 .fixedSize(horizontal: false, vertical: true)
 
-        case .bulletList(let items):
+        case .list(let items):
             VStack(alignment: .leading, spacing: 6) {
                 ForEach(Array(items.enumerated()), id: \.offset) { _, item in
                     HStack(alignment: .firstTextBaseline, spacing: 8) {
-                        Text("•")
-                        Text(MarkdownInline.attributed(item))
+                        listMarker(for: item)
+                        Text(MarkdownInline.attributed(item.text))
                             .fixedSize(horizontal: false, vertical: true)
                     }
-                }
-            }
-
-        case .numberedList(let items):
-            VStack(alignment: .leading, spacing: 6) {
-                ForEach(Array(items.enumerated()), id: \.offset) { index, item in
-                    HStack(alignment: .firstTextBaseline, spacing: 8) {
-                        Text("\(index + 1).")
-                            .monospacedDigit()
-                        Text(MarkdownInline.attributed(item))
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
+                    .padding(.leading, CGFloat(item.depth) * 20)
                 }
             }
 
@@ -75,6 +64,19 @@ struct MarkdownView: View {
 
         case .rule:
             Divider()
+        }
+    }
+
+    @ViewBuilder
+    private func listMarker(for item: MarkdownListItem) -> some View {
+        if let checked = item.checked {
+            Image(systemName: checked ? "checkmark.square.fill" : "square")
+                .font(.callout)
+                .foregroundStyle(checked ? Color.accentColor : Color.secondary)
+        } else if let number = item.number {
+            Text("\(number).").monospacedDigit()
+        } else {
+            Text("•")
         }
     }
 
@@ -174,6 +176,9 @@ private struct FrontmatterView: View {
 
     - first item
     - second item
+      - nested item
+    - [ ] open task
+    - [x] done task
 
     1. step one
     2. step two

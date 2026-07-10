@@ -38,12 +38,8 @@ nonisolated enum MarkdownParser {
                 let (block, next) = parseQuote(lines, start: index)
                 blocks.append(block)
                 index = next
-            } else if isBullet(trimmed) {
-                let (block, next) = parseList(lines, start: index, ordered: false)
-                blocks.append(block)
-                index = next
-            } else if isOrdered(trimmed) {
-                let (block, next) = parseList(lines, start: index, ordered: true)
+            } else if isBullet(trimmed) || isOrdered(trimmed) {
+                let (block, next) = parseList(lines, start: index)
                 blocks.append(block)
                 index = next
             } else if isTableStart(lines, index) {
@@ -126,18 +122,52 @@ nonisolated enum MarkdownParser {
         return (MarkdownBlock(kind: .quote(lines: quoted)), index)
     }
 
-    private static func parseList(_ lines: [String], start: Int, ordered: Bool) -> (MarkdownBlock, Int) {
-        var items: [String] = []
+    private static func parseList(_ lines: [String], start: Int) -> (MarkdownBlock, Int) {
+        var items: [MarkdownListItem] = []
+        var counters: [Int: Int] = [:]
         var index = start
         while index < lines.count {
-            let trimmed = lines[index].trimmingCharacters(in: .whitespaces)
-            let matches = ordered ? isOrdered(trimmed) : isBullet(trimmed)
-            guard matches else { break }
-            items.append(listItemText(trimmed, ordered: ordered))
+            let raw = lines[index]
+            let trimmed = raw.trimmingCharacters(in: .whitespaces)
+            let ordered = isOrdered(trimmed)
+            guard ordered || isBullet(trimmed) else { break }
+
+            let depth = indentDepth(raw)
+            for key in counters.keys where key > depth { counters[key] = nil }
+
+            var number: Int?
+            if ordered {
+                let next = (counters[depth] ?? 0) + 1
+                counters[depth] = next
+                number = next
+            } else {
+                counters[depth] = nil
+            }
+
+            var text = listItemText(trimmed, ordered: ordered)
+            var checked: Bool?
+            if text.hasPrefix("[ ]") {
+                checked = false
+                text = String(text.dropFirst(3)).trimmingCharacters(in: .whitespaces)
+            } else if text.hasPrefix("[x]") || text.hasPrefix("[X]") {
+                checked = true
+                text = String(text.dropFirst(3)).trimmingCharacters(in: .whitespaces)
+            }
+
+            items.append(MarkdownListItem(text: text, depth: depth, number: number, checked: checked))
             index += 1
         }
-        let kind: MarkdownBlock.Kind = ordered ? .numberedList(items: items) : .bulletList(items: items)
-        return (MarkdownBlock(kind: kind), index)
+        return (MarkdownBlock(kind: .list(items: items)), index)
+    }
+
+    private static func indentDepth(_ raw: String) -> Int {
+        var width = 0
+        for char in raw {
+            if char == " " { width += 1 }
+            else if char == "\t" { width += 2 }
+            else { break }
+        }
+        return width / 2
     }
 
     private static func parseParagraph(_ lines: [String], start: Int) -> (MarkdownBlock, Int) {

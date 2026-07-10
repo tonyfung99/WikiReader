@@ -10,8 +10,7 @@ nonisolated struct MarkdownBlock: Identifiable {
         case frontmatter(lines: [String])
         case heading(level: Int, text: String)
         case paragraph(text: String)
-        case bulletList(items: [String])
-        case numberedList(items: [String])
+        case list(items: [MarkdownListItem])
         case code(language: String?, code: String)
         case quote(lines: [String])
         case table(headers: [String], alignments: [ColumnAlignment], rows: [[String]])
@@ -21,4 +20,14 @@ nonisolated struct MarkdownBlock: Identifiable {
 
 nonisolated enum ColumnAlignment {
     case leading, center, trailing
+}
+
+nonisolated struct MarkdownListItem: Equatable {
+    let text: String
+    /// 0-based nesting level (2 spaces or 1 tab per level).
+    let depth: Int
+    /// 1-based number for ordered items, nil for bullets.
+    let number: Int?
+    /// nil unless the item is a `- [ ]` / `- [x]` task.
+    let checked: Bool?
 }
