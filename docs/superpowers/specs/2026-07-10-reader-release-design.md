@@ -141,6 +141,15 @@ Swift Testing in `WikiReaderTests` for all new Core logic: `VaultSearcher`
 parsing, `CodeHighlighter` tokenization, `log.md` parsing, recents ordering.
 No SwiftUI view tests (project convention). Every new view gets a `#Preview`.
 
+## Implementation deviations (recorded 2026-07-11)
+
+- Search results carry a plain snippet, not match ranges; result rows render
+  the snippet unhighlighted. Highlighting is deferred.
+- Vault-relative images do not materialize dataless iCloud files; a
+  not-yet-downloaded image shows the placeholder until iCloud fetches it.
+- Unresolved wikilink taps in the note view are silent no-ops (the "Note not
+  found" alert exists only in the Ask tab). Follow-up candidate.
+
 ## Out of scope (this release)
 
 - Note editing/creation (read-only stands; also avoids colliding with the
