@@ -7,6 +7,8 @@ struct VaultBrowserView: View {
     let title: String
     let root: URL
 
+    @Environment(VaultIndex.self) private var index: VaultIndex?
+
     @State private var files: [VaultFile] = []
     @State private var didLoad = false
 
@@ -36,7 +38,10 @@ struct VaultBrowserView: View {
             }
         }
         .navigationTitle(title)
-        .refreshable { reload() }
+        .refreshable {
+            index?.rebuild()
+            reload()
+        }
         .task {
             guard !didLoad else { return }
             reload()

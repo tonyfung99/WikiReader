@@ -34,6 +34,7 @@ final class VaultIndex {
             let built = await Task.detached(priority: .userInitiated) {
                 (VaultGraph.build(root: url), VaultSearcher.build(root: url))
             }.value
+            guard !Task.isCancelled else { return }
             graph = built.0
             searcher = built.1
             isBuilding = false

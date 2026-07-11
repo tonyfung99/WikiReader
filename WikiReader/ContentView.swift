@@ -52,6 +52,8 @@ private struct MainTabs: View {
     let store: VaultStore
     var onChangeVault: () -> Void
 
+    @Environment(\.scenePhase) private var scenePhase
+
     @State private var index: VaultIndex
     @State private var selection: MainTab = .home
     @State private var pendingQuestion: String?
@@ -100,6 +102,9 @@ private struct MainTabs: View {
             .tag(MainTab.graph)
         }
         .environment(index)
+        .onChange(of: scenePhase) { _, newValue in
+            if newValue == .active { index.rebuild() }
+        }
     }
 }
 

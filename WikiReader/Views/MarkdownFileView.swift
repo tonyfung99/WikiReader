@@ -15,8 +15,12 @@ struct MarkdownFileView: View {
     /// Titles of notes that link to this one, from the shared graph.
     private var backlinks: [String] {
         guard root != nil, let graph = index?.graph else { return [] }
-        let name = file.displayName
-        return Set(graph.edges.filter { $0.target == name }.map(\.source)).sorted()
+        let name = fold(file.displayName)
+        return Set(graph.edges.filter { fold($0.target) == name }.map(\.source)).sorted()
+    }
+
+    private func fold(_ value: String) -> String {
+        value.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current)
     }
 
     init(file: VaultFile, root: URL? = nil) {
