@@ -24,6 +24,12 @@ struct AskEntryDetailView: View {
                     Text(entry.question)
                         .font(.title3.weight(.semibold))
                     statusBody(for: entry)
+                    if let jobID = entry.jobID {
+                        Text("Job: \(jobID)")
+                            .font(.caption2.monospaced())
+                            .foregroundStyle(.tertiary)
+                            .textSelection(.enabled)
+                    }
                 }
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)

@@ -19,6 +19,7 @@ struct AskWikiView: View {
 
     @State private var composeText = ""
     @State private var showSettings = false
+    @FocusState private var isComposeFocused: Bool
 
     private var entries: [AskQueryEntry] {
         session?.entries ?? []
@@ -31,7 +32,7 @@ struct AskWikiView: View {
     var body: some View {
         VStack(spacing: 0) {
             historyList
-            AskInputBar(text: $composeText, saveAnswer: $saveAnswer, canSend: canSend, onSend: send)
+            AskInputBar(text: $composeText, saveAnswer: $saveAnswer, canSend: canSend, isFocused: $isComposeFocused, onSend: send)
         }
         .navigationTitle("Ask")
         .navigationBarTitleDisplayMode(.inline)
@@ -45,6 +46,7 @@ struct AskWikiView: View {
         }
         .onAppear { consumePendingQuestion() }
         .onChange(of: pendingQuestion) { _, _ in consumePendingQuestion() }
+        .onDisappear { isComposeFocused = false }
     }
 
     private var historyList: some View {
@@ -56,6 +58,8 @@ struct AskWikiView: View {
                         systemImage: "questionmark.bubble",
                         description: Text("Ask the wiki something below.")
                     )
+                    .listRowInsets(EdgeInsets())
+                    .listRowSeparator(.hidden)
                 }
                 ForEach(entries) { entry in
                     NavigationLink {
@@ -85,6 +89,7 @@ struct AskWikiView: View {
     private func send() {
         let trimmed = composeText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
+        isComposeFocused = false
         session?.submit(question: trimmed, save: saveAnswer)
         composeText = ""
     }
@@ -151,6 +156,7 @@ private struct AskInputBar: View {
     @Binding var text: String
     @Binding var saveAnswer: Bool
     let canSend: Bool
+    var isFocused: FocusState<Bool>.Binding
     var onSend: () -> Void
 
     var body: some View {
@@ -160,6 +166,7 @@ private struct AskInputBar: View {
                 TextField("Ask the wiki…", text: $text, axis: .vertical)
                     .lineLimit(1...4)
                     .textFieldStyle(.roundedBorder)
+                    .focused(isFocused)
                 Toggle(isOn: $saveAnswer) {
                     Image(systemName: "tray.and.arrow.down")
                 }
