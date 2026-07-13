@@ -15,12 +15,25 @@ final class AskWikiSession {
     private(set) var entries: [AskQueryEntry]
 
     private let defaults: UserDefaults
-    private var pollTasks: [UUID: Task<Void, Never>] = [:]
+    // nonisolated(unsafe): every mutation happens through this class's
+    // @MainActor-isolated methods; the only nonisolated access is in
+    // `deinit`, which by construction has no concurrent access to race with.
+    private nonisolated(unsafe) var pollTasks: [UUID: Task<Void, Never>] = [:]
 
     init(defaults: UserDefaults = AppGroup.defaults) {
         self.defaults = defaults
         self.entries = AskHistoryStore.load(defaults: defaults)
         resumeUnresolvedEntries()
+    }
+
+    /// A poll `Task` keeps this instance alive for its whole run (any
+    /// instance method call across suspension points must keep its receiver
+    /// alive) — so if the owning view is torn down mid-query (e.g. a vault
+    /// switch recreates MainTabs), this session would otherwise keep polling
+    /// independently of the new session that replaces it, both racing to
+    /// persist the same App Group history. Cancelling here closes that gap.
+    deinit {
+        for task in pollTasks.values { task.cancel() }
     }
 
     /// Resolves the configured daemon URL from the same
