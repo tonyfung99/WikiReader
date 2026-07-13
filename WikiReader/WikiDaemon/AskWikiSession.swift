@@ -156,6 +156,11 @@ final class AskWikiSession {
         } catch is CancellationError {
             return
         } catch {
+            // Foundation's URLSession async APIs often surface a Task
+            // cancellation as URLError.cancelled rather than
+            // CancellationError — guard against clobbering a status
+            // `cancel()` already set (e.g. .cancelled) in that race.
+            guard let current = entry(entryID), !current.isResolved else { return }
             update(entryID) {
                 $0.status = .failed
                 $0.errorMessage = error.localizedDescription
