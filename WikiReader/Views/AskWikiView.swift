@@ -177,9 +177,33 @@ private struct AskInputBar: View {
     }
 }
 
+#if DEBUG
+private func previewSession() -> AskWikiSession {
+    let suite = UserDefaults(suiteName: "askwikiview-preview-\(UUID().uuidString)")!
+    let now = Date()
+    let entries = [
+        AskQueryEntry(question: "What's next on the roadmap?", status: .running, jobID: "qry_preview_running", save: true, submittedAt: now),
+        AskQueryEntry(
+            question: "Summarize my notes on Swift actors",
+            status: .done, jobID: "qry_preview_done", save: true, submittedAt: now.addingTimeInterval(-3600),
+            answerMarkdown: "# Swift Actors\n\nActors serialize access to their mutable state, eliminating a whole class of data races.",
+            saved: true, provider: "codex"
+        ),
+        AskQueryEntry(
+            question: "How does the ingest pipeline dedupe sources?",
+            status: .failed, save: false, submittedAt: now.addingTimeInterval(-7200),
+            errorMessage: "The daemon reported a failed query."
+        ),
+        AskQueryEntry(question: "What changed in the graph view last week?", status: .cancelled, save: false, submittedAt: now.addingTimeInterval(-9000)),
+    ]
+    AskHistoryStore.save(entries, defaults: suite)
+    return AskWikiSession(defaults: suite)
+}
+#endif
+
 #Preview {
     NavigationStack {
         AskWikiView(root: URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true))
     }
-    .environment(AskWikiSession(defaults: UserDefaults(suiteName: "askwikiview-preview-\(UUID().uuidString)")!))
+    .environment(previewSession())
 }
