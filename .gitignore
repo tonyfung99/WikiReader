@@ -3,3 +3,8 @@
 
 # macOS
 .DS_Store
+
+# Local secrets, never committed (tokens, etc.)
+.claude/local/
+
+.superpowers/brainstorm/
