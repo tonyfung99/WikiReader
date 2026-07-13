@@ -55,6 +55,7 @@ private struct MainTabs: View {
     @Environment(\.scenePhase) private var scenePhase
 
     @State private var index: VaultIndex
+    @State private var askSession: AskWikiSession
     @State private var selection: MainTab = .home
     @State private var pendingQuestion: String?
 
@@ -63,6 +64,7 @@ private struct MainTabs: View {
         self.store = store
         self.onChangeVault = onChangeVault
         _index = State(initialValue: VaultIndex(root: root))
+        _askSession = State(initialValue: AskWikiSession())
     }
 
     var body: some View {
@@ -102,8 +104,12 @@ private struct MainTabs: View {
             .tag(MainTab.graph)
         }
         .environment(index)
+        .environment(askSession)
         .onChange(of: scenePhase) { _, newValue in
-            if newValue == .active { index.rebuild() }
+            if newValue == .active {
+                index.rebuild()
+                askSession.resumeUnresolvedEntries()
+            }
         }
     }
 }
