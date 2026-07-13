@@ -178,3 +178,30 @@ per project convention).
   over past answers is a future enhancement, not required here).
 - Automatic history retention limits (deferred per the "unlimited, manual
   clear" decision).
+
+## Implementation deviations & follow-ups (recorded 2026-07-13)
+
+- Final whole-branch review found (and the controller fixed) two issues
+  beyond the plan's original design:
+  - The generic `catch` in `AskWikiSession.run()` could overwrite an
+    already-`.cancelled` entry back to `.failed`, since Foundation's
+    URLSession async APIs often surface a cancelled in-flight request as
+    `URLError.cancelled` rather than Swift's `CancellationError`. Fixed by
+    guarding the generic catch against mutating an already-resolved entry.
+  - A poll `Task` keeps its owning `AskWikiSession` alive for the task's
+    full duration (any instance method call across suspension points must
+    keep its receiver alive). Since `MainTabs` — and the `AskWikiSession`
+    it owns — is recreated via `.id(root)` on a vault switch, an in-flight
+    query at switch time could leave the old session polling independently
+    of the new one, both racing to persist the same App Group history.
+    Fixed with `deinit { for task in pollTasks.values { task.cancel() } }`,
+    which required marking `pollTasks` `nonisolated(unsafe)` (`deinit` on an
+    actor-isolated class is itself nonisolated; safe here since deinit has
+    no concurrent access to race with by construction).
+- **Follow-up, not blocking:** the exact bug this branch fixes (task
+  orphaned independent of view lifecycle) has no automated regression test.
+  `AskWikiSession` constructs `WikiDaemonClient` directly with no injection
+  seam, so a `URLProtocol`-mocked test reproducing "cancel mid-request"
+  isn't feasible without adding a small `clientFactory` seam. Worth a
+  fast-follow given how subtle this class of bug is to catch by inspection
+  alone.
