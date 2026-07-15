@@ -59,10 +59,12 @@ nonisolated struct AskQueryEntry: Codable, Identifiable, Equatable {
         }
     }
 
-    /// Matches the daemon's own `JobStore(expiry_seconds: 600.0)` — past
+    /// Kept in lockstep with the daemon's `JobStore(expiry_seconds: …)` — past
     /// this, a still-unresolved entry's job has certainly been evicted
-    /// server-side, so there's no point polling for it.
-    static let staleThreshold: TimeInterval = 600
+    /// server-side, so there's no point polling for it. Raised alongside the
+    /// daemon's longer agent timeout so a heavy query that legitimately runs
+    /// for several minutes is never failed-fast on resume before it finishes.
+    static let staleThreshold: TimeInterval = 900
 
     func isStale(now: Date) -> Bool {
         !isResolved && now.timeIntervalSince(submittedAt) > Self.staleThreshold

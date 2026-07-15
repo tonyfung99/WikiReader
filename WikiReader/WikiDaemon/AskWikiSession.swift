@@ -15,13 +15,15 @@ final class AskWikiSession {
     private(set) var entries: [AskQueryEntry]
 
     private let defaults: UserDefaults
+    private let urlSession: URLSession
     // nonisolated(unsafe): every mutation happens through this class's
     // @MainActor-isolated methods; the only nonisolated access is in
     // `deinit`, which by construction has no concurrent access to race with.
     private nonisolated(unsafe) var pollTasks: [UUID: Task<Void, Never>] = [:]
 
-    init(defaults: UserDefaults = AppGroup.defaults) {
+    init(defaults: UserDefaults = AppGroup.defaults, session: URLSession = .shared) {
         self.defaults = defaults
+        self.urlSession = session
         self.entries = AskHistoryStore.load(defaults: defaults)
         resumeUnresolvedEntries()
     }
@@ -117,13 +119,22 @@ final class AskWikiSession {
     // MARK: - Private
 
     private func startPolling(entryID: UUID, baseURL: URL, token: String, resuming: Bool) {
-        let client = WikiDaemonClient(baseURL: baseURL, token: token)
+        let client = WikiDaemonClient(baseURL: baseURL, token: token, session: urlSession)
         pollTasks[entryID] = Task { [weak self] in
             await self?.run(entryID: entryID, client: client, resuming: resuming)
         }
     }
 
     private func run(entryID: UUID, client: WikiDaemonClient, resuming: Bool) async {
+        // Always free this entry's task slot on EVERY exit — completion,
+        // failure, or cancellation. `resumeUnresolvedEntries()` skips any entry
+        // whose slot is non-nil, so a run that ends without clearing its slot
+        // (notably the `CancellationError` path, hit when iOS tears the poll
+        // task down on backgrounding) would strand the entry as a permanent
+        // spinner: still `.running`, but with a dead task reference that blocks
+        // every future resume. Clearing here restores the invariant resume
+        // relies on, so the next foreground pass can pick the entry back up.
+        defer { pollTasks[entryID] = nil }
         do {
             let jobID: String
             if resuming {
@@ -153,14 +164,12 @@ final class AskWikiSession {
                         $0.saveError = status.saveError
                         $0.provider = status.provider
                     }
-                    pollTasks[entryID] = nil
                     return
                 case .failed:
                     update(entryID) {
                         $0.status = .failed
                         $0.errorMessage = status.error?.message ?? "The daemon reported a failed query."
                     }
-                    pollTasks[entryID] = nil
                     return
                 }
                 guard !Task.isCancelled else { return }
@@ -178,7 +187,6 @@ final class AskWikiSession {
                 $0.status = .failed
                 $0.errorMessage = error.localizedDescription
             }
-            pollTasks[entryID] = nil
         }
     }
 
