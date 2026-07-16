@@ -2,7 +2,9 @@
 
 An iOS app that clips links into a plain-Markdown knowledge vault and reads
 them back — a lightweight, Obsidian-style vault viewer plus a Share Extension,
-built in SwiftUI with **no third-party dependencies**.
+built in SwiftUI and leaning on **almost no third-party dependencies** (the app
+prefers zero, but takes a well-maintained package when it's clearly the right
+tool — see [Tech highlights](#tech-highlights)).
 
 WikiReader writes Markdown files into a folder you choose (e.g. in iCloud
 Drive). A share extension clips Twitter/X posts and articles straight from the
@@ -69,9 +71,14 @@ See **[PRIMER.md](PRIMER.md)** for the design rationale and
 
 - SwiftUI + `@Observable`, `async/await`; the core is marked `nonisolated` so
   parsing, file I/O, and networking run off the main actor.
-- **Zero third-party dependencies** — Markdown parsing/rendering, the
+- **Minimal third-party dependencies** — Markdown parsing/rendering, the
   force-directed graph layout, and the fxtwitter client are all hand-rolled on
-  Foundation/SwiftUI.
+  Foundation/SwiftUI. The policy is to prefer zero, but adopt a well-maintained
+  package when it's clearly the right tool. Two are in use:
+  - `beautiful-mermaid-swift` (MIT) — native Mermaid diagram rendering, no
+    WebView or JavaScript; linked into the app target.
+  - `ViewInspector` (MIT) — structural SwiftUI view testing, in the
+    `WikiReaderTests` target only; never linked into the shipping app.
 - Single-image app icon with light/dark/tinted variants.
 
 ## Requirements

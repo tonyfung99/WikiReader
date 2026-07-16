@@ -62,6 +62,19 @@ xcodebuild test -project WikiReader.xcodeproj -scheme WikiReader \
 - The Xcode project (extension + test targets) is managed; if you must edit
   `project.pbxproj`, use the `xcodeproj` Ruby gem rather than hand-editing.
 
+## Dependencies
+
+The app prefers **zero third-party dependencies** — Markdown parsing/rendering,
+the graph layout, and the fxtwitter client are all hand-rolled. That policy was
+deliberately amended once: take a well-maintained package when it's clearly the
+right tool. Two are in use (both MIT, added via SPM); this is a documented
+exception, not policy drift — don't reach for a dependency by default:
+
+- `beautiful-mermaid-swift` — native Mermaid diagram rendering (no
+  WebView/JavaScript). Linked into the **app** target.
+- `ViewInspector` — structural SwiftUI view testing. Linked into the
+  **`WikiReaderTests`** target only; never into the shipping app.
+
 ## Notes
 
 - Free Apple account works — vault access is a security-scoped bookmark from the
