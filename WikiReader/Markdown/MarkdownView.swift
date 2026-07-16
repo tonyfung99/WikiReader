@@ -9,6 +9,8 @@ struct MarkdownView: View {
     let blocks: [MarkdownBlock]
     var baseDirectory: URL? = nil
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     private var runs: [MarkdownRun] {
         MarkdownRunGrouper.group(blocks)
     }

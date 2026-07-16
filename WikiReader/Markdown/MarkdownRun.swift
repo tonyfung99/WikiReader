@@ -26,7 +26,7 @@ nonisolated enum MarkdownRunGrouper {
 
         func flushPending() {
             guard !pending.isEmpty else { return }
-            runs.append(.text(id: UUID(), blocks: pending))
+            runs.append(.text(id: pending[0].id, blocks: pending))
             pending = []
         }
 

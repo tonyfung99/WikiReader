@@ -68,6 +68,17 @@ struct MarkdownAttributedComposerTests {
         #expect((nestedStyle?.headIndent ?? 0) > (topStyle?.headIndent ?? 0))
     }
 
+    @Test func listMarkerHasExplicitFont() throws {
+        let result = MarkdownAttributedComposer.compose([
+            MarkdownBlock(kind: .list(items: [
+                MarkdownListItem(text: "item", depth: 0, number: nil, checked: nil)
+            ]))
+        ])
+        let markerFont = try #require(result.attribute(.font, at: 0, effectiveRange: nil) as? UIFont)
+        let expected = UIFont.preferredFont(forTextStyle: .body)
+        #expect(markerFont.pointSize == expected.pointSize)
+    }
+
     @Test func multipleBlocksAreSeparatedByNewline() {
         let result = MarkdownAttributedComposer.compose([
             MarkdownBlock(kind: .paragraph(text: "First")),

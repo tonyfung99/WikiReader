@@ -84,8 +84,9 @@ nonisolated enum MarkdownAttributedComposer {
     }
 
     private static func listItemAttributedString(_ item: MarkdownListItem) -> NSAttributedString {
-        let indent: CGFloat = 20 + CGFloat(item.depth) * 20
-        let markerWidth: CGFloat = 20
+        let baseFont = UIFont.preferredFont(forTextStyle: .body)
+        let markerWidth: CGFloat = baseFont.pointSize * 1.4
+        let indent: CGFloat = markerWidth + CGFloat(item.depth) * markerWidth
 
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.firstLineHeadIndent = indent - markerWidth
@@ -94,10 +95,9 @@ nonisolated enum MarkdownAttributedComposer {
         paragraphStyle.tabStops = [NSTextTab(textAlignment: .left, location: indent, options: [:])]
         paragraphStyle.defaultTabInterval = indent
 
-        let baseFont = UIFont.preferredFont(forTextStyle: .body)
         let result = NSMutableAttributedString()
-        result.append(marker(for: item))
-        result.append(NSAttributedString(string: "\t"))
+        result.append(marker(for: item, baseFont: baseFont))
+        result.append(NSAttributedString(string: "\t", attributes: [.font: baseFont]))
         result.append(inline(item.text, baseFont: baseFont))
         result.addAttribute(
             .paragraphStyle, value: paragraphStyle,
@@ -106,16 +106,17 @@ nonisolated enum MarkdownAttributedComposer {
         return result
     }
 
-    private static func marker(for item: MarkdownListItem) -> NSAttributedString {
+    private static func marker(for item: MarkdownListItem, baseFont: UIFont) -> NSAttributedString {
         if let checked = item.checked {
             let attachment = NSTextAttachment()
-            attachment.image = UIImage(systemName: checked ? "checkmark.square.fill" : "square")?
+            let symbolConfig = UIImage.SymbolConfiguration(font: baseFont)
+            attachment.image = UIImage(systemName: checked ? "checkmark.square.fill" : "square", withConfiguration: symbolConfig)?
                 .withTintColor(checked ? .tintColor : .secondaryLabel, renderingMode: .alwaysOriginal)
-            return NSAttributedString(attachment: attachment)
+            return NSAttributedString(attachment: attachment, attributes: [.font: baseFont])
         } else if let number = item.number {
-            return NSAttributedString(string: "\(number).")
+            return NSAttributedString(string: "\(number).", attributes: [.font: baseFont])
         } else {
-            return NSAttributedString(string: "•")
+            return NSAttributedString(string: "•", attributes: [.font: baseFont])
         }
     }
 
