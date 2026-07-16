@@ -41,14 +41,18 @@ struct MarkdownView: View {
                 }
             }
 
-        case .code(_, let code):
-            ScrollView(.horizontal, showsIndicators: false) {
-                Text(CodeHighlighter.attributed(code))
-                    .font(.system(.callout, design: .monospaced))
-                    .padding(12)
+        case .code(let language, let code):
+            if language?.lowercased() == "mermaid" {
+                MermaidBlockView(source: code)
+            } else {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    Text(CodeHighlighter.attributed(code))
+                        .font(.system(.callout, design: .monospaced))
+                        .padding(12)
+                }
+                .background(Color.secondary.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
             }
-            .background(Color.secondary.opacity(0.12))
-            .clipShape(RoundedRectangle(cornerRadius: 8))
 
         case .quote(let lines):
             HStack(spacing: 10) {
