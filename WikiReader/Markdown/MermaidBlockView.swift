@@ -35,8 +35,8 @@ struct MermaidBlockContentView: View {
     @Binding var diagramBoundsBinding: CGRect
 
     var body: some View {
-        if let errorMessage {
-            MermaidFallbackView(source: source, message: errorMessage)
+        if let message = effectiveErrorMessage {
+            MermaidFallbackView(source: source, message: message)
         } else {
             ScrollView(.horizontal, showsIndicators: false) {
                 MermaidDiagramView(
@@ -51,6 +51,18 @@ struct MermaidBlockContentView: View {
                 )
             }
         }
+    }
+
+    /// `MermaidLayer` silently no-ops on empty source (no parseError, no
+    /// diagramBounds, nothing drawn) rather than failing — without this,
+    /// an empty ```mermaid``` fence renders a blank colored box instead of
+    /// the fallback, contradicting the "never blank" guarantee.
+    private var effectiveErrorMessage: String? {
+        if let errorMessage { return errorMessage }
+        if source.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return "Empty diagram source."
+        }
+        return nil
     }
 }
 

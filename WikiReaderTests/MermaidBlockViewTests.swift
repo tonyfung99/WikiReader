@@ -39,4 +39,17 @@ struct MermaidBlockViewTests {
         let text = try view.inspect().find(text: "pie title X\n\"A\" : 1")
         #expect(try text.string() == "pie title X\n\"A\" : 1")
     }
+
+    @Test func showsFallbackWhenSourceIsEmpty() throws {
+        let view = MermaidBlockContentView(
+            source: "   \n\n  ",
+            errorMessage: nil,
+            diagramBounds: .zero,
+            theme: .githubLight,
+            parseErrorBinding: .constant(nil),
+            diagramBoundsBinding: .constant(.zero)
+        )
+        let fallback = try view.inspect().find(MermaidFallbackView.self)
+        #expect(try fallback.actualView().message == "Empty diagram source.")
+    }
 }
