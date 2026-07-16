@@ -75,10 +75,12 @@ See **[PRIMER.md](PRIMER.md)** for the design rationale and
   force-directed graph layout, and the fxtwitter client are all hand-rolled on
   Foundation/SwiftUI. The policy is to prefer zero, but adopt a well-maintained
   package when it's clearly the right tool. Two are in use:
-  - `beautiful-mermaid-swift` (MIT) — native Mermaid diagram rendering, no
-    WebView or JavaScript; linked into the app target.
-  - `ViewInspector` (MIT) — structural SwiftUI view testing, in the
-    `WikiReaderTests` target only; never linked into the shipping app.
+  - [`beautiful-mermaid-swift`](https://github.com/lukilabs/beautiful-mermaid-swift)
+    (MIT) — native Mermaid diagram rendering, no WebView or JavaScript;
+    linked into the app target.
+  - [`ViewInspector`](https://github.com/nalexn/ViewInspector) (MIT) —
+    structural SwiftUI view testing, in the `WikiReaderTests` target only;
+    never linked into the shipping app.
 - Single-image app icon with light/dark/tinted variants.
 
 ## Requirements
