@@ -75,4 +75,38 @@ struct MarkdownAttributedComposerTests {
         ])
         #expect(result.string == "First\nSecond")
     }
+
+    @Test func inlineBoldMarkdownProducesBoldFont() throws {
+        let result = MarkdownAttributedComposer.compose([
+            MarkdownBlock(kind: .paragraph(text: "plain **bold** plain"))
+        ])
+        let boldRange = try #require(result.string.range(of: "bold"))
+        let index = result.string.distance(from: result.string.startIndex, to: boldRange.lowerBound)
+        let font = try #require(result.attribute(.font, at: index, effectiveRange: nil) as? UIFont)
+        #expect(font.fontDescriptor.symbolicTraits.contains(.traitBold))
+
+        let plainIndex = 0
+        let plainFont = try #require(result.attribute(.font, at: plainIndex, effectiveRange: nil) as? UIFont)
+        #expect(!plainFont.fontDescriptor.symbolicTraits.contains(.traitBold))
+    }
+
+    @Test func inlineItalicMarkdownProducesItalicFont() throws {
+        let result = MarkdownAttributedComposer.compose([
+            MarkdownBlock(kind: .paragraph(text: "plain *italic* plain"))
+        ])
+        let italicRange = try #require(result.string.range(of: "italic"))
+        let index = result.string.distance(from: result.string.startIndex, to: italicRange.lowerBound)
+        let font = try #require(result.attribute(.font, at: index, effectiveRange: nil) as? UIFont)
+        #expect(font.fontDescriptor.symbolicTraits.contains(.traitItalic))
+    }
+
+    @Test func inlineCodeMarkdownProducesMonospacedFont() throws {
+        let result = MarkdownAttributedComposer.compose([
+            MarkdownBlock(kind: .paragraph(text: "plain `code` plain"))
+        ])
+        let codeRange = try #require(result.string.range(of: "code"))
+        let index = result.string.distance(from: result.string.startIndex, to: codeRange.lowerBound)
+        let font = try #require(result.attribute(.font, at: index, effectiveRange: nil) as? UIFont)
+        #expect(font.fontDescriptor.symbolicTraits.contains(.traitMonoSpace))
+    }
 }
