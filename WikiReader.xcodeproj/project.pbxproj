@@ -17,6 +17,7 @@
 		367954E7F41F3F8731925EB9 /* MermaidRendererSmokeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1ED40E8B6F0A7FAF923ADC /* MermaidRendererSmokeTests.swift */; };
 		36A0AC16970969573D5EE74E /* BeautifulMermaid in Frameworks */ = {isa = PBXBuildFile; productRef = CF99E29C5B6318E6163CFF00 /* BeautifulMermaid */; };
 		40169D5E79E4AC74CC563696 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3017206B0DFAFA5978F088 /* AppGroup.swift */; };
+		4B49D37901BEEDD70A53CEE8 /* MarkdownAttributedComposerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DCDA79AA99ED773BA7EDC63 /* MarkdownAttributedComposerTests.swift */; };
 		540CE371C65A9DF1D029DC24 /* URLClassifierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53F4777D72BC2DD8B998CBA /* URLClassifierTests.swift */; };
 		5D74D83AEF3F2B76DA164D1B /* FxTwitterClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ECC9D413C9D8B20CB8D04B5 /* FxTwitterClient.swift */; };
 		5E7037ABDDB4B1F57E18E51C /* AskQueryEntryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6C3F03EA1D28AB3DE2E218 /* AskQueryEntryTests.swift */; };
@@ -80,6 +81,7 @@
 		46C256EE1FC2F31DB64E2EEB /* ClipError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ClipError.swift; sourceTree = "<group>"; };
 		4AA1FE28E97816250DFE1820 /* WikiReaderExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WikiReaderExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		52F13FF39EC69202BEA4356C /* VaultBookmarkStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VaultBookmarkStore.swift; sourceTree = "<group>"; };
+		5DCDA79AA99ED773BA7EDC63 /* MarkdownAttributedComposerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MarkdownAttributedComposerTests.swift; sourceTree = "<group>"; };
 		5ECC9D413C9D8B20CB8D04B5 /* FxTwitterClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FxTwitterClient.swift; sourceTree = "<group>"; };
 		6BC1910D47ED781DA341B3D3 /* ShareFlow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ShareFlow.swift; sourceTree = "<group>"; };
 		6C6E935CF9FE2E0157B5D50D /* MarkdownRunTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MarkdownRunTests.swift; sourceTree = "<group>"; };
@@ -175,6 +177,7 @@
 				EA1ED40E8B6F0A7FAF923ADC /* MermaidRendererSmokeTests.swift */,
 				9BA2F551DBF02D0D4FA61508 /* MermaidBlockViewTests.swift */,
 				6C6E935CF9FE2E0157B5D50D /* MarkdownRunTests.swift */,
+				5DCDA79AA99ED773BA7EDC63 /* MarkdownAttributedComposerTests.swift */,
 			);
 			path = WikiReaderTests;
 			sourceTree = "<group>";
@@ -378,6 +381,7 @@
 				367954E7F41F3F8731925EB9 /* MermaidRendererSmokeTests.swift in Sources */,
 				9C23EDE4B51E9DBC65D6D177 /* MermaidBlockViewTests.swift in Sources */,
 				B5B226C409DD1518C5A19E02 /* MarkdownRunTests.swift in Sources */,
+				4B49D37901BEEDD70A53CEE8 /* MarkdownAttributedComposerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
