@@ -153,3 +153,24 @@ conflict in practice for `Text`/`AttributedString` content).
   rejected outright, should the project's testing needs grow).
 - Retrofitting text selection or view tests onto other, pre-existing views
   not touched by this change.
+
+## Implementation deviations & follow-ups (recorded 2026-07-16)
+
+- Final whole-branch review (which built the app, ran `nm` on the linked
+  binary to confirm zero `ViewInspector` symbols ship in it, and read
+  `beautiful-mermaid-swift`'s actual source) found one real bug the
+  controller fixed before merge: `MermaidLayer.prepareDiagram()` silently
+  no-ops on empty/whitespace-only source (no `parseError`, no
+  `diagramBounds`, nothing drawn) rather than failing — so an empty
+  ` ```mermaid ``` ` fence rendered a blank colored box instead of the
+  fallback, contradicting this design's own "never blank" guarantee. Fixed
+  in `MermaidBlockContentView` with an explicit empty-source check routing
+  to the fallback with the message "Empty diagram source." — covered by a
+  new `showsFallbackWhenSourceIsEmpty` test.
+- **Follow-up, not blocking:** the review noted `beautiful-mermaid-swift`
+  ships a purpose-built `MermaidDiagram` value type (hold in `@State`, read
+  `.parseError`/`.diagramBounds` synchronously) that would let
+  `MermaidBlockView` drop its two separate `@State` vars, two `@Binding`s,
+  and the `DispatchQueue.main.async` round-trip in favor of one simpler
+  value. The current implementation is correct and tested as shipped; this
+  is a legitimate simplification worth a follow-up, not a defect.
