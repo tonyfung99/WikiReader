@@ -11,6 +11,7 @@ struct MarkdownView: View {
                 view(for: block.kind)
             }
         }
+        .textSelection(.enabled)
     }
 
     @ViewBuilder
