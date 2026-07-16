@@ -1,46 +1,42 @@
 import SwiftUI
 
-/// Renders parsed markdown blocks as SwiftUI views.
+/// Renders parsed markdown blocks as SwiftUI views. Flowing-text blocks
+/// (heading/paragraph/quote/list) are grouped into runs and rendered as one
+/// continuous, drag-selectable SelectableTextView each; everything else
+/// (tables, images, code, Mermaid, callouts, frontmatter, rules) renders as
+/// its own structural view, exactly as before.
 struct MarkdownView: View {
     let blocks: [MarkdownBlock]
     var baseDirectory: URL? = nil
 
+    private var runs: [MarkdownRun] {
+        MarkdownRunGrouper.group(blocks)
+    }
+
     var body: some View {
         LazyVStack(alignment: .leading, spacing: 14) {
-            ForEach(blocks) { block in
-                view(for: block.kind)
+            ForEach(runs) { run in
+                view(for: run)
             }
         }
         .textSelection(.enabled)
     }
 
     @ViewBuilder
-    private func view(for kind: MarkdownBlock.Kind) -> some View {
+    private func view(for run: MarkdownRun) -> some View {
+        switch run {
+        case .text(_, let runBlocks):
+            SelectableTextView(attributedString: MarkdownAttributedComposer.compose(runBlocks))
+        case .structural(let block):
+            structuralView(for: block.kind)
+        }
+    }
+
+    @ViewBuilder
+    private func structuralView(for kind: MarkdownBlock.Kind) -> some View {
         switch kind {
         case .frontmatter(let lines):
             FrontmatterView(lines: lines)
-
-        case .heading(let level, let text):
-            Text(MarkdownInline.attributed(text))
-                .font(headingFont(level))
-                .fontWeight(.semibold)
-                .fixedSize(horizontal: false, vertical: true)
-
-        case .paragraph(let text):
-            Text(MarkdownInline.attributed(text))
-                .fixedSize(horizontal: false, vertical: true)
-
-        case .list(let items):
-            VStack(alignment: .leading, spacing: 6) {
-                ForEach(Array(items.enumerated()), id: \.offset) { _, item in
-                    HStack(alignment: .firstTextBaseline, spacing: 8) {
-                        listMarker(for: item)
-                        Text(MarkdownInline.attributed(item.text))
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    .padding(.leading, CGFloat(item.depth) * 20)
-                }
-            }
 
         case .code(let language, let code):
             if language?.lowercased() == "mermaid" {
@@ -55,16 +51,6 @@ struct MarkdownView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             }
 
-        case .quote(let lines):
-            HStack(spacing: 10) {
-                Rectangle()
-                    .fill(Color.secondary.opacity(0.4))
-                    .frame(width: 3)
-                Text(MarkdownInline.attributed(lines.joined(separator: "\n")))
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
         case .callout(let type, let title, let lines, let foldable):
             CalloutView(type: type, title: title, lines: lines, foldable: foldable)
 
@@ -76,28 +62,9 @@ struct MarkdownView: View {
 
         case .rule:
             Divider()
-        }
-    }
 
-    @ViewBuilder
-    private func listMarker(for item: MarkdownListItem) -> some View {
-        if let checked = item.checked {
-            Image(systemName: checked ? "checkmark.square.fill" : "square")
-                .font(.callout)
-                .foregroundStyle(checked ? Color.accentColor : Color.secondary)
-        } else if let number = item.number {
-            Text("\(number).").monospacedDigit()
-        } else {
-            Text("•")
-        }
-    }
-
-    private func headingFont(_ level: Int) -> Font {
-        switch level {
-        case 1: .title
-        case 2: .title2
-        case 3: .title3
-        default: .headline
+        case .heading, .paragraph, .quote, .list:
+            EmptyView() // unreachable: MarkdownRunGrouper only emits these inside .text runs
         }
     }
 }
@@ -293,9 +260,12 @@ private struct CalloutView: View {
     }
 
     private var bodyText: some View {
-        Text(MarkdownInline.attributed(lines.joined(separator: "\n")))
-            .fixedSize(horizontal: false, vertical: true)
-            .frame(maxWidth: .infinity, alignment: .leading)
+        SelectableTextView(
+            attributedString: MarkdownAttributedComposer.compose([
+                MarkdownBlock(kind: .paragraph(text: lines.joined(separator: "\n")))
+            ])
+        )
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
